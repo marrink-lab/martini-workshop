@@ -53,12 +53,12 @@ PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -bilayerThickness 2.0 -def
 
 ### Creating mask
 
-Merge `.GRO`  files
+Merge `.gro`  files
 ```sh {execute}
 bentopy grocat chromosome.gro:CHROM membrane.gro:MEM chromosome_membrane.gro
 ```
 
-Convert `.GRO` files to voxel mask
+Convert `.gro` files to voxel mask
 ```sh {execute}
 bentopy mask --interactive --debug-labels debug-labels.gro chromosome_membrane.gro mask.npz
 ```
@@ -77,9 +77,9 @@ bentopy pack --rearrange --seed 1234 --rotations 3 cytosol_input.json
 Explain that the result of bentopy is a placements list -> instanced based file format which
 contains all the information about the packed system.
 
-### Render the cell to .GRO
+### Render the cell to `.gro`
 
-Convert the placements list to a `.GRO` file
+Convert the placements list to a `.gro` file
 
 ```sh {execute}
 bentopy render -t topol.top outputs/workshop_cell_placements.json cytosol.gro
@@ -87,7 +87,7 @@ bentopy render -t topol.top outputs/workshop_cell_placements.json cytosol.gro
 
 ## Assemble Cell
 
-Merge `.GRO`  files
+Merge `gro` files
 ```sh {execute}
 bentopy grocat chromosome_membrane.gro cytosol.gro:CYT -o cell.gro
 ```

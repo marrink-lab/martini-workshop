@@ -8,7 +8,7 @@ optional software: VMD, Xmgrace
 version: beta
 ---
 
-# Constucting a Martini Cell Model
+# Constructing a Martini Cell Model
 
 ## Make Chromosome
 

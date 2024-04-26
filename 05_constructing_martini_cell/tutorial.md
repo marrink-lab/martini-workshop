@@ -55,7 +55,7 @@ PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -bilayerThickness 2.0 -def
 
 Merge `.gro`  files
 ```sh {execute}
-bentopy grocat chromosome.gro:CHROM membrane.gro:MEM chromosome_membrane.gro
+bentopy grocat chromosome.gro:CHROM membrane.gro:MEM -o chromosome_membrane.gro
 ```
 
 Convert `.gro` files to voxel mask

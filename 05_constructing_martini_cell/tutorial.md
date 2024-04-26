@@ -4,7 +4,7 @@ authors: Jan Stevens, Marieke Westendorp
 goal:
 time: __ minutes
 software: GROMACS 2024.1
-optional software: visualization software [VMD](https://www.ks.uiuc.edu/Research/vmd), Xmgrace
+optional software: VMD, Xmgrace
 version: beta
 ---
 

@@ -1,11 +1,10 @@
-
 ---
-date: 06/05/2024
+date: 2024-05-06
 authors: Jan Stevens, Marieke Westendorp
 goal:
-time: __ minutes
+time: minutes
 software: GROMACS 2024.1
-optional software: visualization software [VMD](https://www.ks.uiuc.edu/Research/vmd), Xmgrace
+optional_software: visualization software [VMD](https://www.ks.uiuc.edu/Research/vmd), Xmgrace
 version: beta
 ---
 

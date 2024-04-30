@@ -11,7 +11,7 @@ version: beta
 
 # Constructing a Martini Cell Model
 
-## Make Chromosome
+## Chromosome
 
 `genome.ig` is given and contains a random sequence of 20.000 basepairs.
 
@@ -28,7 +28,7 @@ polyply gen_coords -p topol.top -box 120 120 120 -o dsDNA.gro -lib martini2 -bm_
 - Convert constraints to bonds.
 - add elastic network to `.ITP` file.
 
-## Make Envelope
+## Envelope
 
 Given is
 
@@ -36,7 +36,6 @@ Given is
 - sphere.tsi -> membrane of radius 120nm with selected inclusions
 - input.str input for TS2CG -> tweaked ALP
 - Martini2.LIB (standard)
-
 
 ### Pointilise mesh
 
@@ -54,23 +53,23 @@ Place the lipids and proteins on the correct vertices.
 PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -bilayerThickness 2.0 -defout topol
 ```
 
-## Make cytosol
+## Cytosol
 
-Now that we have a structure for the chromosome and the cell's envelope, we can make the first steps in bringing the structures together.
+Now that we have a structure for the chromosome and the cell's envelope, we can bring the structures together.
 Inside of the cell envelope, we want to model the cytosol.
 We will place the chromosome into this compartment, and we want to fill the remaining space with protein and metabolites.
-For these steps, we have developed a tool called **bentopy**.
+For these steps, we will use a tool that we have developed, called **bentopy**.
 
 **bentopy** is a tool for packing molecules in spaces.
 Through a spectral space reduction scheme combined with a random-placement strategy, **bentopy** can quickly set up well-stirred systems of any number of input structures.
 One of its goals is to enable packing of large spaces in a user-friendly and performance-conscious manner.
 
-Its central subcommand is **bentopy pack**, which takes an input file in which a space and a list of structures are defined, and places these structures within the space.
+Its central subcommand is **bentopy pack**, which takes an input file which specifies a space and a list of structures, and places these structures within the space.
 The placements are stored in a placement list that associates the placed structures with their rotations and positions.
-A space can be specified using voxel masks that define the regions where placement is allowed.
-The structures are specified as a list of entries that include a name, path, and the desired number of placed instances.
+A space can be configured using voxel masks that define the regions where placement is allowed.
+The structures are provided as a list of entries that include a name, path, and the desired number of placed instances.
 
-The **bentopy render** subcommand creates a structure (and topology) file from the placement list that is written by **bentopy pack**.
+The **bentopy render** subcommand creates a structure file (and topology file) from the placement list that is written by **bentopy pack**.
 
 To create the masks that define a space, **bentopy mask** is available, which can be used to identify and select different compartments in a provided structure.
 The masks are represented as compressed boolean numpy arrays (`.npz`), which provide a very flexible interface for defining these spaces.
@@ -83,12 +82,12 @@ Doing this by other means requires minimal effort, but this command provides an 
 This new residue name is set by appending `:<name>` to the file path to apply this name to.
 For mesoscale models, this can be a very useful or even necessary step in distinguishing between different large sets of particles and structures.
 
-### Creating mask
+### Create a mask
 
 First, we merge the chromosome model with the membrane model.
 This allows us to define a space based on the inside of this merged model in the next step.
-After the paths to the chromosome and membrane structures, we can set the residue names for each of the beads in those files with the `:<residue name>` notation.
-For all atoms in the `chromosome.gro` structure, we set the residue name to `CHROM`, for `membrane.gro` we set them to `MEM`.
+After the paths to the chromosome and membrane structures, we can set the residue names for each of the beads in those files with the `:<name>` notation.
+For all atoms in the `chromosome.gro` structure, we set the residue names to `CHROM` and for `membrane.gro` we set them to `MEM`.
 The output file is specified with the `-o`/`--output` flag.
 
 ```sh {execute}
@@ -98,7 +97,7 @@ bentopy grocat chromosome.gro:CHROM membrane.gro:MEM -o chromosome_membrane.gro
 This merged model consists of the chromosome and the envelope around it.
 With **bentopy mask**, we can select the _inside_ of this compartment.
 When we use notions like inside and outside in conversation, we have a very strong sense of what that means.
-Yet, it can be tough to define the distinction of such compartments in a larger space in a computational workflow.
+Yet, it can be tough to define the distinction of such compartments in a computational workflow.
 The [mdvcontainment][mdvc] package provides a powerful and robust way of making this distinction, even in periodic systems.
 The **mask** subcommand wraps mdvcontainment to quickly create masks that serve as input for the packing process.
 
@@ -111,7 +110,7 @@ A `.gro` file in which beads are placed at the center of each voxel that is cons
 Each of the beads is named according to its compartment label.
 By selecting these different labels in a molecule viewer, you can find the exact space you are interested in.
 
-In most cases, however, this is not required, since some inner compartment is desired from a simple system.
+However, in most cases where some inner compartment is desired from a simple system this is not required.
 This also happens to be the case for us, in this example.
 The `--autofill` flag instructs **mask** to automatically select all _innermost_ compartments.
 To understand which spaces this flag selects, you can imagine a nested doll.
@@ -119,13 +118,21 @@ In a nested doll, the `--autofill` flag will select the space inside the innermo
 
 We write the resulting mask to `mask.npz`.
 As mentioned above, this is simply a compressed boolean numpy array.
-Any other means of creating such an array of the expected size would work as well---the **mask** subcommand merely serves as a convenient tool for setting these up for most cases.
-
-TODO: Containment vs mask resolution? Seems ipmortant to actually mention the mask resolution, at least, since it does come up later in the _space_ section for the input file.
+Any other means of creating such an array of the expected size would work as well---the **mask** subcommand merely serves as a convenient tool for setting these voxel masks up for most cases.
 
 ```sh {execute}
 bentopy mask --inspect-labels-path labels.gro --autofill chromosome_membrane.gro mask.npz
 ```
+
+In the output for this command, you may have noticed two parameters that we have not discussed yet.
+For our case, the default 1.0 nm _containment resolution_ and 0.5 nm _mask resolution_ are appropriate, but they can also be overwritten.
+
+- `--containment-resolution 1.0`: set the _containment resolution_ to some value in nm.
+  This parameter sets the resolution that is used during the mdvcontainment procedure.
+  If it is very low, the boundaries between compartments may not be distinguished properly, leading to fewer and unexpectedly merged compartments.
+  On the other hand, if the value is too high, detail gets lost and small (parts of) compartments may not be detected.
+- `--mask-resolution 0.5`: set the _mask resolution_ to some value in nm.
+  When the output mask is written, its resolution and size must match those specified in the input configuration file for **bentopy pack**.
 
 Though we used the `--autofill` flag to pick the inner compartment automatically, it can still be helpful and interesting to inspect the `labels.gro` file.
 When loaded into a molecule viewer, the different label groups can be selected according to their atom name.
@@ -150,11 +157,11 @@ To define the space in which the placement procedure will take place, we must se
 - _size_: a three-integer list describing the dimensions of the space in nm, (_x_, _y_, _z_) order.
   Note that this _size_ must match the nm dimensions of the mask we just set up.
 - _resolution_: the size of the voxels in nm that are used to represent the space internally.
-  Note that the _resolution_ must match the _mask-resolution_ that was used in setting up the mask.
+  Note that the _resolution_ must match the _mask resolution_ that was used in setting up the mask.
 - _compartments_: a list of compartments. A compartment has the following structure:
     - _id_: a name for the compartment.
     - One of the following two options:
-        - _voxels_: provide the _path_ to a voxel mask (any compressed boolean numpy array `.npz`).
+        - _voxels_: provide the _path_ to a voxel mask (any compressed boolean numpy array, `.npz`).
         - _shape_: use an analytical function to set up the internal voxel mask.
           Takes the name of a shape from the following options: "spherical", "cuboid", "none".
           (Note that this option is very likely to change.)
@@ -180,7 +187,7 @@ To define the space in which the placement procedure will take place, we must se
 In the _output_ section, we can specify what information should be associated with the placement, and where the output should be written to.
 As is explained in detail later, the output of **bentopy pack** is not the final structure.
 Instead, an intermediate instance-based list of placements is written out---a file we call the _placement list_.
-It takes the following information:
+The _output_ section takes the following information:
 
 - _title_: the name of this placement. This will become the title of the placement list.
 - _dir_: the directory to place the output files into.
@@ -204,10 +211,11 @@ It takes the following information:
 
 #### The _segments_ section
 
-The _segments_ section lists all structures to be placed.
+All structures we want to place must be listed in the _segments_ section.
 Each segment definition has the following fields:
 
-- _name_: a name for the structure that corresponds to its definition in the `.itp` files defined above in the _output_._topol_includes_ field. Making sure the _name_ is correct is important for generating correct topology files after the placement procedure.
+- _name_: a name for the structure that corresponds to its definition in the `.itp` files defined above in the _output.topol_includes_ field.
+  Since this _name_ will be used to write the top file, it is important to set it up correctly, here.
 - _path_: the path to the relevant structure file (`.pdb` or `.gro`).
 - _number_: an integer value that represents the number of desired placements for this structure.
 - _compartments_: a list of the compartments in which this structure may be placed. In our case, this is the `"cytosol"` compartment for all of these structures.
@@ -588,12 +596,13 @@ Now that we have our input file, we can move on to actually packing the cell.
 We provide the following command line options:
 
 - `--rearrange`: order the specified segments according to the voxel volume they occupy, placing the largest structures first and the smallest structures last.
-  This rearrangement is a heuristic to improve the quality of the packing
-  If a number of small structures are placed first, large structures may be hard to place even when enough voxel volume is available
+  This rearrangement is a heuristic to improve the quality of the packing.
+  When a number of small structures are placed first, large structures may be hard to place even when enough voxel volume is available.
   If this flag is not set, the user-provided order from the input file is respected.
-- `--seed 5172`: set the random number generator seed. Since **bentopy pack** places according to a random sampling scheme, we must set a seed to make the placements deterministic.
+- `--seed 5172`: set the random number generator seed.
+  Since **bentopy pack** places according to a random sampling scheme, we must set a seed to make the placements deterministic.
 - `--rotations 3`: the number of random rotations to sample for each of the listed segments.
-  If the desired placement number for some segment is set to 30, and the number of rotations is set to 3, ten placements will be made for each of the three random rotations (unless the space is full and placement is obstructed).
+  For instance, if the desired placement number for some segment is set to 30, and the number of rotations is set to 3, ten placements will be made for each of the three random rotations (unless the space is full and placement is obstructed).
 
 ```sh {execute}
 bentopy pack --rearrange --seed 5172 --rotations 3 cytosol_input.json
@@ -610,7 +619,7 @@ Writing the placements to such an intermediate file format has a couple of advan
 - No time is spent waiting for costly formatting and disk writes during the packing procedure.
 - Representing the placement of a larger structure as a simple translation and rotation minimizes memory overhead. Storing all particles for the placed structures can take up a considerable amount of memory at large scales.
 - The light-weight placement list file is trivial to transfer while a rendered structure file may be very large and slow to send around.
-- Inspecting a full structure file can be slow or even prohibitive. Rendering only a part of the beads involved or even only one bead per structure instance based on the placement list can be very helpful in such cases.
+- Inspecting a full structure file can be slow or even prohibitive. Rendering only a part of the beads involved or even only one bead per structure instance based on the placement list can be very helpful in such cases. (See the command's usage information about the `--mode` option.)
 - The final structure can be rendered very quickly. **bentopy render**, which renders the placement list to a structure file is a stand-alone, optimized executable written in a very fast language.
 </details>
 
@@ -619,7 +628,7 @@ Writing the placements to such an intermediate file format has a couple of advan
 Convert the placements list to a `.gro` file
 
 With the `-t`/`--topology` flag, we specify a path to write a topology file to, based on the placement list.
-The _name_ field for each segment entry will be used as the identifier for each structure in the topology file.
+As you may recall, the _name_ field for each segment entry will be used as the identifier for each structure in the topology file.
 We render the structure to `cytosol.gro`.
 
 ```sh {execute}
@@ -636,7 +645,5 @@ The final structure is written to `cell.gro`.
 ```sh {execute}
 bentopy grocat chromosome_membrane.gro cytosol.gro:CYT -o cell.gro
 ```
-
-Setup topology file.
 
 [mdvc]: https://github.com/BartBruininks/mdvcontainment

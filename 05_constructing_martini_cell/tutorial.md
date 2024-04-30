@@ -31,6 +31,7 @@ polyply gen_coords -p topol.top -box 120 120 120 -o dsDNA.gro -lib martini2 -bm_
 ## Make Envelope
 
 Given is
+
 - Directory with membrane proteins containing: ATP synthase, magnesium transporter, calcium transporter, potassium transporter.
 - sphere.tsi -> membrane of radius 120nm with selected inclusions
 - input.str input for TS2CG -> tweaked ALP
@@ -40,12 +41,15 @@ Given is
 ### Pointilise mesh
 
 Subsample the mesh to have enough points for all the lipids
+
 ```sh {execute}
 PLM -TSfile sphere.tsi -Mashno 3
 ```
 
 ### Backmack mesh to Martini2
+
 Place the lipids and proteins on the correct vertices.
+
 ```sh {execute}
 PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -bilayerThickness 2.0 -defout topol
 ```
@@ -61,7 +65,7 @@ For these steps, we have developed a tool called **bentopy**.
 Through a spectral space reduction scheme combined with a random-placement strategy, **bentopy** can quickly set up well-stirred systems of any number of input structures.
 One of its goals is to enable packing of large spaces in a user-friendly and performance-conscious manner.
 
-Its central subcommand is **bentopy pack**, which takes an input file in which a space and a list of structures are defined, and places these structures within the space. 
+Its central subcommand is **bentopy pack**, which takes an input file in which a space and a list of structures are defined, and places these structures within the space.
 The placements are stored in a placement list that associates the placed structures with their rotations and positions.
 A space can be specified using voxel masks that define the regions where placement is allowed.
 The structures are specified as a list of entries that include a name, path, and the desired number of placed instances.
@@ -128,8 +132,8 @@ When loaded into a molecule viewer, the different label groups can be selected a
 For instance, in VMD, the selection `name "-1"` will show the inside of the vesicle in our case, the envelope can be selected with `name "1"`, and `name "-2"` selects the outside.
 Note that the quotes are necessary for correctly selecting negative-numbered labels.
 
-[^bentopy-mask_interactive]: For automated applications, the `--no-interactive` 
-flag can be set to require the specification of all parameters through command 
+[^bentopy-mask_interactive]: For automated applications, the `--no-interactive`
+flag can be set to require the specification of all parameters through command
 line arguments and with no input at runtime.
 
 ### Pack the cell
@@ -151,8 +155,8 @@ To define the space in which the placement procedure will take place, we must se
     - _id_: a name for the compartment.
     - One of the following two options:
         - _voxels_: provide the _path_ to a voxel mask (any compressed boolean numpy array `.npz`).
-        - _shape_: use an analytical function to set up the internal voxel mask. 
-          Takes the name of a shape from the following options: "spherical", "cuboid", "none". 
+        - _shape_: use an analytical function to set up the internal voxel mask.
+          Takes the name of a shape from the following options: "spherical", "cuboid", "none".
           (Note that this option is very likely to change.)
 
 ```json
@@ -578,7 +582,7 @@ It is common to place this section last, since it tends to be rather long.
 
 </details>
 
-#### Packing 
+#### Packing
 
 Now that we have our input file, we can move on to actually packing the cell.
 We provide the following command line options:
@@ -614,7 +618,7 @@ Writing the placements to such an intermediate file format has a couple of advan
 
 Convert the placements list to a `.gro` file
 
-With the `-t`/`--topology` flag, we specify a path to write a topology file to, based on the placement list. 
+With the `-t`/`--topology` flag, we specify a path to write a topology file to, based on the placement list.
 The _name_ field for each segment entry will be used as the identifier for each structure in the topology file.
 We render the structure to `cytosol.gro`.
 

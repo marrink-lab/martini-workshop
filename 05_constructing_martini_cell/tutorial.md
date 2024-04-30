@@ -1,10 +1,11 @@
 ---
-date: 06/05/2024
+date: 2024-05-06
 authors: Jan Stevens, Marieke Westendorp
-goal:
-time: __ minutes
-software: GROMACS 2024.1
-optional software: VMD, Xmgrace
+goal: >
+  Construct small model of a cell with a chromosome, an envelope, and cytosolic proteins and metabolites.
+time: ?? minutes
+software: GROMACS 2024.1, polyply, TS2CG, bentopy
+optional software: VMD
 version: beta
 ---
 

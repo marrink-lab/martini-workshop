@@ -591,12 +591,12 @@ We provide the following command line options:
   This rearrangement is a heuristic to improve the quality of the packing
   If a number of small structures are placed first, large structures may be hard to place even when enough voxel volume is available
   If this flag is not set, the user-provided order from the input file is respected.
-- `--seed 1234`: set the random number generator seed. Since **bentopy pack** places according to a random sampling scheme, we must set a seed to make the placements deterministic.
+- `--seed 5172`: set the random number generator seed. Since **bentopy pack** places according to a random sampling scheme, we must set a seed to make the placements deterministic.
 - `--rotations 3`: the number of random rotations to sample for each of the listed segments.
   If the desired placement number for some segment is set to 30, and the number of rotations is set to 3, ten placements will be made for each of the three random rotations (unless the space is full and placement is obstructed).
 
 ```sh {execute}
-bentopy pack --rearrange --seed 1234 --rotations 3 cytosol_input.json
+bentopy pack --rearrange --seed 5172 --rotations 3 cytosol_input.json
 ```
 
 As we specified in the _output_ section of the input configuration, the placements that are determined during the packing procedure will be written to the `outputs` directory as an instance-based list.

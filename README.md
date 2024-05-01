@@ -2,7 +2,7 @@
 Martini tutorials for "Minimal Cell" workshop
 
 <p align="center">
-    <img src="./cell.png" width="500" height="500">
+    <img src="./figures/cell.png" width="500" height="500">
 </p>
 
 [Tutorial I: Bilayer Self-assembly](01_bilayer_self_assembly/tutorial.md)

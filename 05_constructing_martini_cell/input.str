@@ -1,0 +1,18 @@
+include proteins/membrane_proteins/ATP_synthase.gro
+include proteins/membrane_proteins/Potassium_transporter.gro
+include proteins/membrane_proteins/Calcium_transporter.gro
+include proteins/membrane_proteins/Magnesium_transporter.gro
+
+[Lipids List]
+Domain 0
+POPC 0.50 0.50 0.54
+CHOL 0.50 0.50 0.32
+End
+
+[Protein List]
+ATP_synthase            1   0.01    0   0   -11
+Potassium_transporter   2   0.01    0   0   -5
+Calcium_transporter     3   0.01    0   0   -5
+Magnesium_transporter   4   0.01    0   0   -6
+End Protein
+

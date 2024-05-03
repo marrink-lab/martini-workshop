@@ -80,9 +80,9 @@ In the source code folder, execute the script `compile.sh` as
 
 In this folder, two binary files will be generated: `Pointillism (PLM)` and `CG Membrane Builder (**PCG**)`.
 
-## Simple flat membrane
+## Building a vesicle
 
-First step in this tutorial is using a TS file of a sphere to create a vesicle. In this tutorial's
+The first step in this tutorial is using a TS file of a sphere to create a vesicle. In this tutorial's
 directory you can find the corresponding `sphere.tsi` file. Use a text editor to open this and familiarize yourself
 with the structure. For more information on the `.tsi` file format, see [the section](#tsi-file-format)
 at the end of this document.
@@ -121,7 +121,7 @@ Using any text editor, create an `input.str` file and write the following text i
 ```{execute}
 [Lipids List]
 Domain      0
-POPC     1     1     0.64
+POPC    1.00    1.00    0.54
 End
 ```
 
@@ -152,7 +152,7 @@ output should look like *Figure 3*.
 <table>
 <td>
     <div align="center">
-    <img src="../figures/03_simple_bilayer.png" width="70%"/>
+    <img src="../figures/03_simple_vesicle.png" width="70%"/>
     </div>
 </td>
 <td>
@@ -164,10 +164,10 @@ output should look like *Figure 3*.
  [ molecules ]
 ; domain 0
  ;  in the upper monolayer
-     POPC  6258
+     POPC  7417
 ; domain 0
  ;  in the lower monolayer
-     POPC  3877
+     POPC  4595
 ```
 
 </td>
@@ -297,8 +297,8 @@ Using any text editor, edit the `input.str` file and write the following text in
 ```text
 [Lipids List]
 Domain      0
-POPC      0.5     0.5     0.64
-DOPC      0.5     0.5     0.67
+POPC    0.50    0.50    0.54
+CHOL    0.50    0.50    0.32
 End
 ```
 
@@ -313,7 +313,7 @@ output should look like *Figure 4*.
 <table>
 <td>
     <div align="center">
-    <img src="../figures/03_simple_bilayer.png" width="70%"/>
+    <img src="../figures/03_mixed_vesicle.png" width="70%"/>
     </div>
 </td>
 <td>
@@ -323,14 +323,14 @@ output should look like *Figure 4*.
  [ system ]
  Expect a large membrane
  [ molecules ]
-; domain 0
+; dom
  ;  in the upper monolayer
-     POPC  3057
-     DOPC  3057
+     POPC  4657
+     CHOL  4657
 ; domain 0
  ;  in the lower monolayer
-     POPC  1894
-     DOPC  1894
+     POPC  2885
+     CHOL  2885
 ```
 
 </td>
@@ -350,7 +350,7 @@ Similar to the topology files in **GROMACS** this is done by adding an `include`
 top of the `input.str` file.
 
 ```text
-include potassium_transporter.gro
+include potassium_transporter_cg.gro
 ```
 
 > [!NOTE]
@@ -362,23 +362,23 @@ include potassium_transporter.gro
 
 ### Creating and orienting a protein model
 
-The file `potassium_transporter.pdb` has been provided.
+The file `potassium_transporter_aa.pdb` has been provided.
 
 ```{execute}
-memembed -o memembed.pdb potassium_transporter.pdb
+memembed -o memembed.pdb potassium_transporter_aa.pdb
 ```
 
 Visually inspect the generated file `memembed.pdb` and confirm that the orientation of the protein
 in the membrane makes sense.
 
 ```{execute}
-sed '/DUM/d' memembed.pdb >> PT_oriented.pdb
+sed '/DUM/d' memembed.pdb >> potassium_transporter_oriented.pdb
 ```
 
 ```{execute}
-martinize2 -f  PT_oriented.pdb -x PT_cg.pdb -p backbone -ff martini3001 -elastic -scfix -cys auto -ef 700.0 -el 0.5 -eu 0.9 -ea 0 -ep 0
+martinize2 -f  potassium_transporter_oriented.pdb -x potassium_transporter_cg.pdb -p backbone -ff martini3001 -elastic -scfix -cys auto -ef 700.0 -el 0.5 -eu 0.9 -ea 0 -ep 0
 
-gmx editconf -f PT_cg.pdb -o PT_cg.gro
+gmx editconf -f potassium_transporter_cg.pdb -o potassium_transporter_cg.gro
 ```
 
 </details>
@@ -411,7 +411,7 @@ should be placed, we can run the regular **TS2CG** protocol. Similar to before, 
 commands:
 
 ```{execute}
-PLM -TSfile Sphere.tsi -Mashno 3 -bilayerThickness 3.8 -rescalefactor 4 4 4
+PLM -TSfile sphere.tsi -bilayerThickness 3.8 -rescalefactor 4 4 4 -Mashno 4
 PCG -str input.str -function backmap -Bondlength 0.2 -LLIB Martini3.LIB -defout output
 ```
 
@@ -421,7 +421,7 @@ output should look like *Figure 5*.
 <table>
 <td>
     <div align="center">
-    <img src="../figures/03_simple_bilayer.png" width="50%"/>
+    <img src="../figures/03_toymodel_envelope.png" width="50%"/>
     </div>
 </td>
 <td>
@@ -434,12 +434,12 @@ output should look like *Figure 5*.
 potassium_transporter   2
 ; domain 0
  ;  in the upper monolayer
-     POPC  2854
-     DOPC  2854
+     POPC  4354
+     CHOL  4354
 ; domain 0
  ;  in the lower monolayer
-     POPC  1764
-     DOPC  1764
+     POPC  2715
+     CHOL  2715
 ```
 
 </td>

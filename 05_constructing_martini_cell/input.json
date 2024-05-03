@@ -1,0 +1,189 @@
+{
+	"space": {
+		"size": [120, 120, 120],
+		"resolution": 0.5,
+		"compartments": [
+			{
+				"id": "cytosol",
+				"voxels": {
+					"path": "mask.npz"
+				}
+			}
+		]
+	},
+	"output": {
+		"title": "workshop_cell",
+		"dir": "outputs",
+		"topol_includes": [
+			"martini_v2.1-dna.itp",
+			"martini_v2.0_ions.itp",
+			"chromosome.itp",
+			"metabolites.itp",
+			"cytosolic_proteins.itp",
+			"membrane_proteins.itp",
+			"lipids.itp"
+		]
+	},
+	"segments": [
+		{
+			"name": "syn539",
+			"path": "proteins/cytosolic_proteins/syn539_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn804",
+			"path": "proteins/cytosolic_proteins/syn804_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn637",
+			"path": "proteins/cytosolic_proteins/syn637_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn163",
+			"path": "proteins/cytosolic_proteins/syn163_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn451",
+			"path": "proteins/cytosolic_proteins/syn451_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn305",
+			"path": "proteins/cytosolic_proteins/syn305_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn353",
+			"path": "proteins/cytosolic_proteins/syn353_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn220",
+			"path": "proteins/cytosolic_proteins/syn220_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn407",
+			"path": "proteins/cytosolic_proteins/syn407_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn809",
+			"path": "proteins/cytosolic_proteins/syn809_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn447",
+			"path": "proteins/cytosolic_proteins/syn447_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn260",
+			"path": "proteins/cytosolic_proteins/syn260_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn308",
+			"path": "proteins/cytosolic_proteins/syn308_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn95",
+			"path": "proteins/cytosolic_proteins/syn95_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn661",
+			"path": "proteins/cytosolic_proteins/syn661_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn348",
+			"path": "proteins/cytosolic_proteins/syn348_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn79",
+			"path": "proteins/cytosolic_proteins/syn79_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn142",
+			"path": "proteins/cytosolic_proteins/syn142_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn297",
+			"path": "proteins/cytosolic_proteins/syn297_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		},
+		{
+			"name": "syn6",
+			"path": "proteins/cytosolic_proteins/syn6_cg.pdb",
+			"number": 50,
+			"compartments": [
+				"cytosol"
+			]
+		}
+	]
+}

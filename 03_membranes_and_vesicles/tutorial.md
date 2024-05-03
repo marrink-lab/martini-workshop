@@ -18,8 +18,7 @@ the cytosol (i.e. proteins, metabolites, ...) from the extracellular space: the 
 cell envelope is a membrane composed of mixture of lipids and proteins encapsulating the cytosol. In
 this tutorial we will discuss how to use **TS2CG** to construct these large lipid membranes.
 
-**TS2CG** is a tool which used to build coarse-grained (CG) membrane models with user-defined shapes and
-compositions. Initially, it was developed for backmapping dynamically triangulated simulation
+**TS2CG** is a tool which can be used to build coarse-grained (CG) membrane models with user-defined shapes and compositions. Initially, it was developed for backmapping dynamically triangulated simulation
 structures into their corresponding molecular models. This gives us the possibility to incorporate
 experimentally obtained membrane shapes and compositions and generate CG membrane's initial structure.
 
@@ -58,7 +57,7 @@ the configuration is ready for subsequent MD simulation. [^TS2CG]*
 membrane backmapped from EM map (upper panel left), protein induced membrane tubulation backmapped
 from DTS simulation (upper panel right), budded lipid bilayer including STxB proteins backmapped
 from DTS simulation (lower panel left) and curved lipid bilayer with two different lipid types
-created from scratch using PCG. [^TS2CG]*
+created from scratch using **PCG**. [^TS2CG]*
 
 
 
@@ -67,7 +66,7 @@ created from scratch using PCG. [^TS2CG]*
 Download the latest version of the **TS2CG** from
 
 ```{execute}
-git clone https://github.com/marrink-lab/TS2CG1.1/tree/master
+git clone https://github.com/marrink-lab/TS2CG1.1
 cd TS2CG1.1
 ```
 
@@ -79,7 +78,7 @@ In the source code folder, execute the script `compile.sh` as
 ./compile.sh
 ```
 
-In this folder, two binary files will be generated: `Pointillism (PLM)` and `CG Membrane Builder (PCG)`.
+In this folder, two binary files will be generated: `Pointillism (PLM)` and `CG Membrane Builder (**PCG**)`.
 
 ## Simple flat membrane
 
@@ -102,21 +101,21 @@ executing the following command:
 PLM -TSfile sphere.tsi -bilayerThickness 3.8 -rescalefactor 4 4 4 -Mashno 4
 ```
 
-The initial `sphere.tsi` is `4 nm` in radius, we rescale it a factor 5 in all direcection. Since
+The initial `sphere.tsi` is `4 nm` in radius, we rescale it a factor 5 in all direction. Since
 the overall mesh becomes larger we also have to increase the number of point, here we subsample
-each triangle twise (-Mashno 2), increawsing the number of vertices by a factor of `4^2`.
+each triangle twice (-Mashno 2), increasing the number of vertices by a factor of `4^2`.
 For a cell of 400nm in radius we would need a rescale the mesh a hundred times in all three
 dimensions (-rescalefactor 100 100 100) and use increase the number a thousand fold (-mashno 6).
 
-If the command completes succesfuly two directories have been created in the current working directory.
+If the command completes successfully two directories have been created in the current working directory.
 In the pointvisualization_data folder, you will find gromacs compatible structure files
-(.gro) for the upper and lower monolayer including a topology file (.top).
-You can have inspect the created points using vmd. The other folder is named point and will be used
+(`.gro`) for the upper and lower monolayer including a topology file (`.top`).
+You can have inspect the created points using VMD. The other folder is named point and will be used
 by the CG Membrane Builder to create the CG model. This folder contains files which store a higher
-level detailed information of the pointelised mesh (coordinates/normals/curvature).
+level detailed information of the pointillised mesh (coordinates/normals/curvature).
 
-The second step to create a vesicle is two place lipids on the generated points using PCG. For this
-you need to write a .str file defining the lipid composition of both monolayers.
+The second step to create a vesicle is two place lipids on the generated points using **PCG**. For this
+you need to write a `.str` file defining the lipid composition of both monolayers.
 Using any text editor, create an `input.str` file and write the following text in it:
 
 ```{execute}
@@ -127,27 +126,27 @@ End
 ```
 
 This implies that your system should contain only one lipid domain with POPC in both monolayers
-using an area per lipid (APL) for POPC of 0.64. To know more about the .str file format and other
+using an area per lipid (APL) for POPC of 0.64. To know more about the `.str` file format and other
 options see the User Manual[^UserManual].
 
-The other thing we need is a lipid structure file (.LIB). This file simply defines the lipid
+The other thing we need is a lipid structure file (`.LIB`). This file simply defines the lipid
 connectivity for placing the lipid beads on the previously generated points. Making this file is
 easy but might be time consuming for many different lipids. (See the User Manual for the exact file
-format). Luckily, we already have a file that contains all Martini3 lipids called Martini3.LIB,
+format). Luckily, we already have a file that contains all Martini3 lipids called `Martini3.LIB`,
 you can find it in the files folder.
 
-Using these two files now you can execute PCG:
+Using these two files now you can execute **PCG**:
 
-- `-str`: input file (default = input.str)
-- `-function`: backmap/analytical_shape (default=backmap)
+- `-str`: input file (default: `input.str`)
+- `-function`: backmap/analytical_shape (default: backmap)
 - `-Bondlength`: initial bond guess for lipids
-- `-LLIB`: CG lipid library file name (default=no)
-- `defout`: output files prefix (default = output)
+- `-LLIB`: CG lipid library file name (default: no)
+- `defout`: output files prefix (default: output)
 
 ```{execute}
 PCG -str input.str -function backmap -Bondlength 0.2 -LLIB Martini3.LIB -defout output
 ```
-Executing **PCG** will have generate two output files output.gro and output.top and the
+Executing **PCG** will have generate two output files `output.gro` and `output.top` and the
 output should look like *Figure 3*.
 
 <table>
@@ -185,13 +184,13 @@ output should look like *Figure 3*.
 
 ## Fixed shapes
 
-If you are making a simple shaped membrane, creating TS file (i.e. mesh) can be a cumbersome
+If you are making a membrane with a simple shape, creating TS file (i.e. mesh) can be a cumbersome
 intermediate step.
 In these cases it is often easier to use an analytical shape definition instead of the TS file.
-This funcitonality is also supported in **TS2CG** by means of the `analytical_shape` option of **PCG**.
+This functionality is also supported in **TS2CG** by means of the `analytical_shape` option of **PCG**.
 
-The analyitcal shape is specified by adding `[ Shape Data ]` section to the 'input.str' file. In
-this section you can specify the type of analystical shape (sphere, cylinder, 1D fourier, flat) and
+The analytical shape is specified by adding `[ Shape Data ]` section to the `input.str` file. In
+this section you can specify the type of analytical shape (sphere, cylinder, 1D fourier, flat) and
 relevant properties of the chosen shape (size, density, ...). Below are four examples of for all
 the available shapes.
 
@@ -288,11 +287,11 @@ PCG -str input.str -function analytical_shape -Bondlength 0.2 -LLIB Martini3.LIB
 
 
 Realistic cell membranes are not composed of single lipid type, but usually comprise of a complex
-mixtures of lipids with a large varity in headgroups and tails. In this second part of the tutorial
+mixtures of lipids with a large variety in headgroups and tails. In this second part of the tutorial
 we will create a vesicle containing a mixture of two lipids that will be randomly placed on the
-generated points using PCG.
+generated points using **PCG**.
 
-For this you need to edit a the `.str` input file defining the lipid composition of both monolayers.
+For this you need to edit the `.str` input file defining the lipid composition of both monolayers.
 Using any text editor, edit the `input.str` file and write the following text in it:
 
 ```text
@@ -308,7 +307,7 @@ End
 PCG -str input.str -function backmap -Bondlength 0.2 -LLIB Martini3.LIB -defout output
 ```
 
-Executing **PCG** again will have generate two output files output.gro and output.top and the
+Executing **PCG** again will have generate two output files `output.gro` and `output.top` and the
 output should look like *Figure 4*.
 
 <table>
@@ -363,7 +362,7 @@ include potassium_transporter.gro
 
 ### Creating and orienting a protein model
 
-pdb file given
+The file `potassium_transporter.pdb` has been provided.
 
 ```{execute}
 memembed -o memembed.pdb potassium_transporter.pdb
@@ -397,9 +396,9 @@ End Protein
 > Make sure that the name you use in the `[ Protein List ]` directive is also the name first line
 > of the protein's `.gro` file. This is not the case yes, change this.
 
-As a last step we have to modify the 'sphere.tsi' file to include the protein at a chosen vertex
-input. Opening the Upper.gro or Lower.gro file in VMD enables you to inspect the mesh and choose an
-appropriate postition for the proteins, here we choose positions:
+As a last step we have to modify the `sphere.tsi` file to include the protein at a chosen vertex
+input. Opening the `Upper.gro` or `Lower.gro` file in VMD enables you to inspect the mesh and choose an
+appropriate position for the proteins, here we choose positions:
 
 ```text
 inclusion      2
@@ -457,9 +456,9 @@ mixture made with VMD (left) and the corresponding topology file (right).*
 
 ...
 
-## .TSI file format
+## `.tsi` file format
 
-The following shows a part of a .tsi file with all necessary keywords highlighted in bold. Every .tsi file starts with a line calling version 1.1 of TS2CG. The next line defines the box size (x, y, and z) of the system in nm. The next three sections describe the TS mesh. Each section starts with a keyword (vertex, triangle and inclusion) and their corresponding number. Here, we have 130 vertices (the numbering starts from 0). Each vertex has an index and a position in x, y and z (in nm). Additionally, a vertex can have a domain id, e.g., vertices 1, 126 and 127 belong to domain 1. The default domain is 0. The 130 vertices are connected via 256 triangles. Again, every triangle has an index (starting from 0) and is defined by the vertices the triangle connects, i.e. triangle 0 connects vertices 11, 55 and 43. Furthermore, a .tsi file can have a (protein) inclusion section. Here, there are three inclusions from two different types. Again, each inclusion has an index. The index is followed by the inclusion type (here: type 1 for inclusions 0 and 1, type 2 for inclusion 2) and the corresponding vertex index. The last two (floating point) numbers describe a unit two dimensional vector (sum of both numbers must be one!) which defines the orientation of the inclusion with respect to the bilayer normal.
+The following shows a part of a `.tsi` file with all necessary keywords highlighted in bold. Every `.tsi` file starts with a line calling version 1.1 of TS2CG. The next line defines the box size (x, y, and z) of the system in nm. The next three sections describe the TS mesh. Each section starts with a keyword (vertex, triangle and inclusion) and their corresponding number. Here, we have 130 vertices (the numbering starts from 0). Each vertex has an index and a position in x, y and z (in nm). Additionally, a vertex can have a domain id, e.g., vertices 1, 126 and 127 belong to domain 1. The default domain is 0. The 130 vertices are connected via 256 triangles. Again, every triangle has an index (starting from 0) and is defined by the vertices the triangle connects, i.e. triangle 0 connects vertices 11, 55 and 43. Furthermore, a `.tsi` file can have a (protein) inclusion section. Here, there are three inclusions from two different types. Again, each inclusion has an index. The index is followed by the inclusion type (here: type 1 for inclusions 0 and 1, type 2 for inclusion 2) and the corresponding vertex index. The last two (floating point) numbers describe a unit two dimensional vector (sum of both numbers must be one!) which defines the orientation of the inclusion with respect to the bilayer normal.
 
 ```
 **version 1.1**

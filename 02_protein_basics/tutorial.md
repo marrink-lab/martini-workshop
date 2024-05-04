@@ -42,7 +42,7 @@ First, we download the structure file from the AlphaFold Protein Structure Datab
 For clarity and readability in this tutorial, we store the file as `protein.pdb`.
 
 ```sh {execute}
-wget https://alphafold.ebi.ac.uk/files/AF-P47352-F1-model_v4.pdb -O protein.pdb
+wget https://alphafold.ebi.ac.uk/files/AF-P47293-F1-model_v4.pdb -O protein.pdb
 ```
 
 Since we are using a structure from the AlphaFold database, we are already in very good shape to immediately move on to mapping the structure to a coarse-grain model.
@@ -135,7 +135,7 @@ Notice that we set the title of the `[ system ]` to something appropriate, and t
 #include "protein.itp"
 
 [ system ]
-Peptide deformylase
+S-adenosylmethionine synthase
 
 [ molecules ]
 protein 1
@@ -173,7 +173,7 @@ A dodecahedron box shape is appropriate here, since it will limit the volume aro
 - `-bt dodecahedron`: select the box type.
 
 ```sh {execute}
-gmx editconf -f protein_cg.pdb -d 1.0 -bt dodecahedron -o protein_cg.gro
+gmx editconf -f protein_cg.pdb -d 1.0 -bt cubic -o protein_cg.gro
 ```
 
 The `gro` file that is produced in this step contains all beads that were defined in the cg `pdb` file that served as the input and also features the box vectors that were determined.
@@ -205,7 +205,7 @@ It is important to set a reasonable Van der Waals radius (`-radius 0.21`), since
 
 ```sh {execute}
 mkdir sol
-gmx solvate -cp em_vac/em_vac.gro -cs water.gro -radius 0.21 -o sol/sol.gro
+gmx solvate -cp em_vac/em_vac.gro -cs mdp_files/water.gro -radius 0.21 -o sol/sol.gro
 ```
 
 Now that we have embedded the structure in water, we need to update the topology to reflect that.

@@ -44,7 +44,7 @@ We will begin with self-assembling a dipalmitoyl-phosphatidylcholine (DPPC) bila
 The gromacs tool insert-molecules can take the `DPPC-em.gro` this single-molecule conformation and attempt to place it in a simulation box multiple times at a random position and random orientation, each time checking that there are no overlaps between the consecutively placed molecules. For help on any gromacs tool, you can add the -h flag.
 
 ```sh {execute}
-gmx insert-molecules -ci DPPC.gro -box 7.5 7.5 7.5 -nmol 128 -radius 0.21 -try 500 -o 128_DPPC.gro
+gmx insert-molecules -ci DOPC.gro -box 7.5 7.5 7.5 -nmol 128 -radius 0.21 -try 500 -o 128_DOPC.gro
 ```
 The value of the flag -radius (default van der Waals radii) has to be increased from its default atomistic length (*0.105* nm) to a value reflecting the size of Martini CG beads.
 Preparing the topology
@@ -62,19 +62,19 @@ To create the .top file (we’ll call it `topol.top`) that describes the system 
 #include "martini_v3.0.0_phospholipids_v1.itp"
 
 [ system ]
-DPPC BILAYER SELF-ASSEMBLY
+DOPC BILAYER SELF-ASSEMBLY
 
 [ molecules ]
 ; Molecule types and their numbers are written in the order
 ; they appear in the structure file
-DPPC 128
+DOPC 128
 ```
 ## Adding the water
 
 Using the Gromacs tool solvate to add the water beads to the simulation box. `gmx solvate` needs to have the structure of an equilibrated water box to use as a template to fill the empty space in `128_DPPC.gro`. An equilibrated water box gro file is provided in the `mdp_files` directory.
 
 ```sh {execute}
-gmx solvate -cp 128_DPPC.gro -cs mdp_files/water.gro -radius 0.21 -p topol.top -o 128_DPPC_solvated.gro
+gmx solvate -cp 128_DOPC.gro -cs mdp_files/water.gro -radius 0.21 -p topol.top -o 128_DOPC_solvated.gro
 ```
 
 The flag -radius value is used to reflect the size of Martini CG beads. A new file named `128_DPPC_solvated.gro` is produced containing 128 lipids and added water beads.
@@ -83,7 +83,7 @@ A short energy minimization
 Now you will perform an energy minimization of the solvated system to get rid of high forces between beads that may have been placed quite close to each other. The settings file minimization.mdp is provided in the `mdp_files` directory.
 
 ```sh {execute}
-gmx grompp -f mdp_files/minimization.mdp -c 128_DPPC_solvated.gro -p topol.top -o min.tpr
+gmx grompp -f mdp_files/minimization.mdp -c 128_DOPC_solvated.gro -p topol.top -o min.tpr
 gmx mdrun -v -s min.tpr -c minimized.gro
 ```
 Running the production simulation

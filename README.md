@@ -16,3 +16,6 @@ Martini tutorials for "Minimal Cell" workshop
 [Tutorial V: Constructing Martini cell model](05_constructing_martini_cell/tutorial.md)
 
 [Tutorial VI: Simulate Martini cell model](06_simulate_martini_cell_model/tutorial.md)
+
+
+[download Martini parameters]('files/martini_v3.0.0.tar.gz')

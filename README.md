@@ -28,7 +28,7 @@ This tutorial series follows a logical path, where each tutorial introduces a ne
 
 We start, historically accurate, by introducing the Martini model for lipids, followed by a simulation of a small protein. In Tutorial III, these two models will be combined to generate a lipid vesicle containing membrane proteins. In Tutorial IV, we will use Polyply to fill the vesicle that we previously generated with a long fragment of single-stranded Martini2 DNA. To conclude, we will then move on to Tutorial V, where we will merge all of these different elements together to create a toy model of a bacterial cell.
 
-To begin the tutorial, clone the `martini-workshop` repository using the command:
+**To begin the tutorial**: Clone the `martini-workshop` repository using the command:
 
 ```
 git clone https://github.com/marrink-lab/martini-workshop.git

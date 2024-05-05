@@ -7,7 +7,6 @@
 ; D.H. de Jong et al., Martini straight: boosting performance using a shorter cutoff and GPUs, submitted.
 
 title                    = Martini
-define                   = -DPOSRES
 
 ; TIMESTEP IN MARTINI
 ; Most simulations are numerically stable with dt=40 fs,
@@ -16,18 +15,18 @@ define                   = -DPOSRES
 ; Time steps smaller than 20 fs are not required unless specifically stated in the itp file.
 
 integrator               = md
-dt                       = 0.01
-nsteps                   = 200000
+dt                       = 0.02
+nsteps                   = 2500000
 nstcomm                  = 100
 comm-grps		         =
 
 nstxout                  = 0
 nstvout                  = 0
 nstfout                  = 0
-nstlog                   = 1000
+nstlog                   = 25000
 nstenergy                = 100
-nstxout-compressed       = 1000
-compressed-x-precision   = 100
+nstxout-compressed       = 25000
+compressed-x-precision   = 1000
 compressed-x-grps        =
 energygrps               =
 
@@ -88,19 +87,19 @@ rvdw                     = 1.1
 ; Rahman is prone to oscillating behaviour. For bilayer systems the pressure
 ; coupling should be done semiisotropic.
 
-tcoupl                   = berendsen ; v-rescale
+tcoupl                   = v-rescale
 tc-grps                  = system
-tau_t                    = 2.0
+tau_t                    = 1.0
 ref_t                    = 300
-Pcoupl                   = berendsen ; parrinello-rahman
-Pcoupltype               = isotropic
-tau_p                    = 12.0 ; 12.0  ;parrinello-rahman is more stable with larger tau-p, DdJ, 20130422
-compressibility          = 3e-4 ;  3e-4
-ref_p                    = 1.0  ; 1.0
+Pcoupl                   = parrinello-rahman
+Pcoupltype               = semi-isotropic
+tau_p                    = 12.0 12.0
+compressibility          = 3e-4 3e-4
+ref_p                    = 1.0 1.0
 
 gen_vel                  = yes
 gen_temp                 = 300
-gen_seed                 = 473529
+gen_seed                 = -1
 
 ; MARTINI and CONSTRAINTS
 ; for ring systems and stiff bonds constraints are defined

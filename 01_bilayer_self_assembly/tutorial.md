@@ -109,7 +109,7 @@ Note that again, the value of the default van der Waals radii (`—radius`) has 
 </div>
 
 <center>
-*__Figure 1 Starting structure__:  Snapshot of the system before the simulation.*
+*__Figure 1: Starting structure__  Snapshot of the system before the simulation.*
 </center>
 
 ## A short energy minimization
@@ -174,11 +174,11 @@ If all the steps went well, you're VMD window, should look similar to *Figure 2*
 
 ## Bilayer equilibrium run and analysis
 
-Before we continue, please check if your bilayer was formed in a plane other than the xy-plane, make sure to rotate the system so that it will. For this step you can use:
+Before we continue, please check if your bilayer was formed in a plane other than the xy-plane. Make sure to rotate the system so that it will, for this step you can use:
+
 ```sh
 gmx editconf -f md/md.gro -rotate 90 0 0 -o md/md.gro
 ```
-
 In case you did not get a bilayer at all, please extend your previous simulation or continue with the bilayer from the [worked examples](...).
 
 The spontaneous assembly simulation was done using isotropic pressure coupling. The bilayer may have formed but is probably under tension because of the isotropic pressure coupling. Therefore, we first need to run a simulation in which the area of the bilayer can reach a proper equilibrium value. This requires that we use independent pressure coupling in the plane and perpendicular to the plane. Set up a simulation for another 50 ns at zero surface tension (we switch to semi-isotropic pressure coupling; if the pressure is the same in the plane and perpendicular to the plane, the bilayer will be at zero surface tension).

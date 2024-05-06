@@ -105,9 +105,12 @@ gmx solvate -cp 128_POPC.gro -cs mdp_files/water.gro -radius 0.21 -p topol.top -
 Note that again, the value of the default van der Waals radii (`—radius`) has to be increased to reflect the size of Martini CG beads. We also provide the option `-p topol.top` to automatically include water beads inserted by GROMACS in our topology file. If you open the file ‘topol.top’, you see that at the bottom of the file, a line of the form “W …” is added.
 
 <div align="center">
-<img src="../figures/01_initial_structure.png" width="70%"/>
+<img src="../figures/01_initial_structure.png" width="50%"/>
 </div>
+
+<center>
 *__Figure 1 Starting structure__:  Snapshot of the system before the simulation.*
+</center>
 
 ## A short energy minimization
 
@@ -131,9 +134,12 @@ gmx mdrun -v -s md.tpr -x md.xtc -c md.gro
 This might take approximately *10* minutes on a single CPU but by default gmx mdrun will use all available CPUs on your machine. The `-v` option shows an estimate of the time to completion. See `gmx mdrun`’s help, `-h`, for instructions on how to tune the numbers of parallel threads used for the simulation. You may want to check the progress of the simulation to see whether the bilayer has already formed before the end of the simulation.
 
 <div align="center">
-<img src="../figures/01_bilayer.png" width="70%"/>
+<img src="../figures/01_bilayer.png" width="50%"/>
 </div>
+
+<center>
 *__Figure 2: Self-assembled lipid bilayer__ Snapshot of the simulation after a short MD simulation.*
+</center>
 
 ## Visualization
 

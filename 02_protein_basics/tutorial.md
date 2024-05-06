@@ -14,7 +14,7 @@ version: beta
 
 In this tutorial, we will create and simulate a Martini 3 model based on an atomistic protein structure. The aim is to define the regular workflow and protocols for setting up coarse-grained simulations of soluble globular proteins.
 
-We will create a CG model of a S-adenosylmethionine synthase protein selected from the *JCVI-syn3A* proteome. The all-atom structure was generated using an AlphaFold2.
+We will create a CG model of a S-adenosylmethionine synthase protein selected from the *JCVI-syn3A* proteome.[^protein_uniprot] The all-atom structure was generated using an AlphaFold2.
  
 To start this tutorial, don't forget to navigate to the respective folder in the `martini-workshop` repository:
 
@@ -29,7 +29,7 @@ cd 02_protein_basics
 
 In this tutorial, we will use the following programs.
 
-- `martinize2` (`pip3 install vermouth`).
+- `Martinize2` (`pip3 install vermouth`).
 - `gmx` (`source .../GMXRC`).
 - `xmgrace` or some other means of viewing `xvg` files.
 - Common command line utilities.
@@ -47,14 +47,14 @@ Since we are using a structure from the AlphaFold database, we are already in ve
 Other models may require some clean-up prior to that step, however.
 Generally, cleaning the structure comes down to removing any non-protein atoms, such as waters.
 
-## Creating a CG model using _martinize2_.
+## Creating a CG model using _Martinize2_.
 
-Now we are ready to map the atomistic structure to a coarse-grain model using _martinize2_. This coarse-graining step is well-automated but requires quite a few input options. We use the following:
+Now we are ready to map the atomistic structure to a coarse-grain model using _Martinize2_.[^Martinize2] This coarse-graining step is well-automated but requires quite a few input options. We use the following:
 
 - `-f`: path to the input structure.
 - `-o`: output path for the topology file
 - `-x`: output path for the coarse-grained structure.
-- `-p backbone`: instruct _martinize2_ to apply position restrains to the backbone beads.
+- `-p backbone`: instruct _Martinize2_ to apply position restrains to the backbone beads.
 - `-ff martini3001`: the target force field is Martini 3.
 - `-scfix`: apply side chain corrections.
 - `-cys auto`: create cysteine bonds.
@@ -74,14 +74,14 @@ martinize2 -f protein.pdb -o topol.top -x protein_cg.pdb \
 
 
 <details>
-<summary>More details on the _martinize2_ options.</summary>
+<summary>More details on the _Martinize2_ options.</summary>
 
 >To help preserve the higher-order structure of proteins, we add extra harmonic bonds between non-bonded beads based on a distance cut-off. When the option `-elastic` is set, __Martinize2__ will automatically generate harmonic bonds between backbone beads, creating an *elastic network*.<br>
 It is possible to tune the elastic bonds in order to make the protein behave properly: change the force constant (`-ef`), make the force constant distance-dependent (`-ea`, `-ep`), change upper and lower distance cut-off (`-eu`, `ea`). The only way to find the proper parameters is to try different options and compare the behavior of your protein to an atomistic simulation or experimental data (NMR, etc.).
 
 >A second option which can complement improvements in structure and dynamics of side chains is the use of *side chain corrections* (`-scfix`), which are extra dihedrals added between side chains and backbone beads. 
 
->Be aware that both the *elastic networks* and the *side chain corrections* are based on your reference atomistic structure. A last aspect that can be considered is the addition of *disulfide bridges* that can also be automatically detected by martinize2. 
+>Be aware that both the *elastic networks* and the *side chain corrections* are based on your reference atomistic structure. A last aspect that can be considered is the addition of *disulfide bridges* that can also be automatically detected by Martinize2. 
 
 </details>
 
@@ -103,7 +103,7 @@ List the contents of your working directory with `ls` to see whether they have b
 
 *__Figure 1: Renders of the CG protein__ Left panel: Licorice representation of the Martini model of the S-adenosylmethionine synthase protein. Right panel: Both the protein backbone (in blue) and the elastic network (in green) are shown.*
 
-Since _martinize2_ creates a generically named `itp` file for us, we want to rename it to avoid confusion.
+Since _Martinize2_ creates a generically named `itp` file for us, we want to rename it to avoid confusion.
 To match our naming strategy for this tutorial, we will rename the file to `protein.itp` and change the internal title as well.
 
 ```sh {execute}
@@ -132,7 +132,7 @@ These force field `itp`s can be found in the `martini_v3.0.0` directory.
 If we list its contents, we see the following items:
 
 ```sh
-ls martini_v3.0.0
+ls -lH martini_v3.0.0
 ```
 
 ```
@@ -390,7 +390,7 @@ If all the steps went well, you're VMD window, should look similar to *Figure 2*
 
 Now, you've got a simulation of a Martini protein with different Martini protein models. If you do not want to wait, pre-run trajectories can be found in the archive.
 
-An easy way to evaluate the behaviors of the Martini proteins in our simulation is to follow the deviation/fluctuation of the backbone during the simulation (and compare it to an all-atom simulation if possible). We will calculate the RMSD and RMSF using GROMACS tools (`gmx rms` and `gmx rmsf`).
+An easy way to evaluate the behaviors of the Martini proteins in our simulation is to follow the deviation/fluctuation of the backbone during the simulation (and compare it to an all-atom simulation if possible). We will calculate the protein model's root mean square deviation (RMSD) and root mean square fluctuation (RMSF) using GROMACS.
 
 For clarity, we create an analysis directory to write our output files into.
 
@@ -399,6 +399,7 @@ mkdir -p analysis
 ```
 
 ### RMSD
+To calculate the RMSD, we use the GROMACS tool `gmx rms`:
 
 ```sh {execute}
 gmx rms -s md/md.tpr -f md/traj.xtc -o analysis/rmsd.xvg
@@ -409,6 +410,7 @@ gmx rms -s md/md.tpr -f md/traj.xtc -o analysis/rmsd.xvg
 ```
 
 ### RMSF
+To calculate the RMSF, we use the GROMACS tool `gmx rmsf`:
 
 ```sh {execute}
 gmx rmsf -s md/md.tpr -f md/traj.xtc -o analysis/rmsf.xvg
@@ -419,5 +421,5 @@ gmx rmsf -s md/md.tpr -f md/traj.xtc -o analysis/rmsf.xvg
 >[!TIP]
 > Redo the tutorial while changing the input parameters provided to _Martinize2_ to generate the elastic network and see how this affects the RMSD and RMSF. Logically, removing the elastic network will result in both these values being much higher.
 
-[protein_uniprot]: https://www.uniprot.org/uniprotkb/P47352/entry
-[martini3_parameters]: http://md.chem.rug.nl/images/martini_v300.zip
+[^protein_uniprot]: https://www.uniprot.org/uniprotkb/P47293/entry
+[^Martinize2]: Kroon P C, Grunewald F, Barnoud J, van Tilburg M, Souza P C T, Wassenaar T A, Marrink S J (2023) Martinize2 and Vermouth: Unified Framework for Topology Generation eLife 12:RP90627 https://doi.org/10.7554/eLife.90627.1

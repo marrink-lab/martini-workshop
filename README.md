@@ -44,19 +44,20 @@ Once connected to the Delta HPC, request a GPU node to complete the simulations 
 salloc --account=bcuj-delta-gpu --partition=gpuA100x4 --time=05:00:00 --mem=64g --gpus-per-node=1 --ntasks=1 --cpus-per-task=16 --nodes=1
 ```
 
-<pre>
+```
 salloc: Pending job allocation 3583167
 salloc: job 3583167 queued and waiting for resources
 salloc: job 3583167 has been allocated resources
 salloc: Granted job allocation 3583167
 salloc: Waiting for resource configuration
-salloc: Nodes <span style="background-color: #FFFF00">gpua028</span> are ready for job
-</pre>
+salloc: Nodes gpua028 are ready for job
+```
 
-Above is an example of the terminal output from the Delta HPC. The assigned node is mentioned on the final line (highlighted); you can now SSH to it:
-<pre>
-ssh <span style="background-color: #FFFF00">gpua028</span>
-</pre>
+Above is an example of the terminal output from the Delta HPC. The assigned node is mentioned on the final line; you can now SSH to it:
+
+```
+ssh gpua028
+```
 
 > [!WARNING]
 > Make sure to replace `gpua028` by the node assigned to you!

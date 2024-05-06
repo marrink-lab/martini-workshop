@@ -269,7 +269,7 @@ So, we can safely ignore the warning using the `-maxwarn 1` option.
 <div align="center">
 <img src="../figures/02_simulation_snapshot.png" width="70%"/>
 </div>
-*__Figure 2: Renders of our starting structure__ A Licorice representation of the protein model is shown in blue, surrounded by a transparent surface representing water beads. Red beads represent ions, NA and CL.*
+*__Figure 2: Render of our starting structure__ A Licorice representation of the protein model is shown in blue, surrounded by a transparent surface representing water beads. Red beads represent ions, NA and CL.*
 
 ## MD protocol
 
@@ -292,8 +292,8 @@ gmx mdrun -v -deffnm em/em
 
 ### Equilibration Simulation
 
-As the second step in our protocol, we need to perform a position-restrained (NPT) equilibration of the minimized system. _Martinize2_ has generated position restraints for the backbone beads (thanks to the `-p flag`). During the equilibration simulation, we'll use a timestep of *10fs*, a Berendsen thermostat, and position restraints (`define = -DPOSRES`).<br>
-Now, perform the preprocessing and equilibration:
+As the second step in our protocol, we need to perform a position-restrained (NPT) equilibration of the minimized system. _Martinize2_ has generated position restraints for the backbone beads (thanks to the `-p flag`). During the equilibration simulation, we'll use a relatively small timestep of *10fs*, a Berendsen thermostat, and position restraints (`define = -DPOSRES`).<br>
+Now we can perform the preprocessing and equilibration:
 
 ```sh {execute}
 mkdir -p eq
@@ -417,7 +417,7 @@ gmx rmsf -s md/md.tpr -f md/traj.xtc -o analysis/rmsf.xvg
 ```
 
 >[!TIP]
-> Redo the tutorial while changing the input parameters provided to _Martinize2_ to generate the elastic network
+> Redo the tutorial while changing the input parameters provided to _Martinize2_ to generate the elastic network and see how this affects the RMSD and RMSF. Logically, removing the elastic network will result in both these values being much higher.
 
 [protein_uniprot]: https://www.uniprot.org/uniprotkb/P47352/entry
 [martini3_parameters]: http://md.chem.rug.nl/images/martini_v300.zip

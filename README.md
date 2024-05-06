@@ -35,11 +35,14 @@ git clone https://github.com/marrink-lab/martini-workshop.git
 cd martini-workshop
 ```
 
-Afterwards, complete the tutorials in their respective folders.
+Each tutorial will be completed their respective folders, here the needed files are present.
 
 
 > [!TIP]
 > If one of the simulations takes too long, you can download a worked example for each tutorial [here](https://github.com/marrink-lab/martini-workshop/...).
 
-These tutorials were written for the *"Workshop: Simulations and Visualization of a Minimal Bacterial Cell"* in Champaign-Urbana by *Jan Stevens, Marieke Westendorp, Mert Bozoflu, Bart Bruininks and Siewert-Jan Marrink*. Parts of this workshop were based on the [*2021 Martini online workshop*](http://cgmartini.nl/index.php/2021-martini-online-workshop).
+These tutorials were written for the *"Workshop: Simulations and Visualization of a Minimal
+Bacterial Cell"* in Champaign-Urbana by *Jan Stevens, Marieke Westendorp, Mert Bozoflu*.
+Parts of this workshop were based on the [*2021 Martini online
+workshop*](http://cgmartini.nl/index.php/2021-martini-online-workshop).
 

@@ -50,12 +50,12 @@ salloc: job 3583167 queued and waiting for resources
 salloc: job 3583167 has been allocated resources
 salloc: Granted job allocation 3583167
 salloc: Waiting for resource configuration
-salloc: Nodes <mark>gpua028</mark> are ready for job
+salloc: Nodes <span style="background-color: #FFFF00">gpua028</span> are ready for job
 </pre>
 
 Above is an example of the terminal output from the Delta HPC. The assigned node is mentioned on the final line (highlighted); you can now SSH to it:
 <pre>
-ssh <mark>gpua028</mark>
+ssh <span style="background-color: #FFFF00">gpua028</span>
 </pre>
 
 > [!WARNING]

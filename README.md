@@ -26,21 +26,49 @@ This tutorial series follows a logical path, where each tutorial introduces a ne
 
 <br>
 
-We start, historically accurate, by introducing the Martini model for lipids, followed by a simulation of a small protein. In Tutorial III, these two models will be combined to generate a lipid vesicle containing membrane proteins. In Tutorial IV, we will use Polyply to fill the vesicle that we previously generated with a long fragment of single-stranded Martini2 DNA. To conclude, we will then move on to Tutorial V, where we will merge all of these different elements together to create a toy model of a bacterial cell.
+We start, historically accurate, by introducing the Martini model for lipids, followed by a simulation of a small protein. In Tutorial III, these two models will be combined to generate a lipid vesicle containing membrane proteins. In Tutorial IV, we will use Polyply to fill the vesicle we previously generated with a long fragment of single-stranded Martini2 DNA. To conclude, we will then move on to Tutorial V, where we will merge all these elements to create a toy model of a bacterial cell.
 
-**To begin the tutorial**: Clone the `martini-workshop` repository using the command:
+**To begin the tutorial**: 
 
+Start by connecting to the Delta HPC using your account:
+
+```
+ssh $USERNAME@dt-login01.delta.ncsa.illinois.edu
+```
+> [!WARNING]
+> Make sure to replace `$USERNAME` by your own.
+
+Once connected to the Delta HPC, request a GPU node to complete the simulations for this tutorial:
+
+```
+salloc --account=bcuj-delta-gpu --partition=gpuA100x4 --time=05:00:00 --mem=64g --gpus-per-node=1 --ntasks=1 --cpus-per-task=16 --nodes=1
+```
+
+<pre>
+salloc: Pending job allocation 3583167
+salloc: job 3583167 queued and waiting for resources
+salloc: job 3583167 has been allocated resources
+salloc: Granted job allocation 3583167
+salloc: Waiting for resource configuration
+salloc: Nodes <mark>gpua028</mark> are ready for job
+</pre>
+
+Above is an example of the terminal output from the Delta HPC. The assigned node is mentioned on the final line (highlighted); you can now SSH to it:
+<pre>
+ssh <mark>gpua028</mark>
+</pre>
+
+> [!WARNING]
+> Make sure to replace `gpua028` by the node assigned to you!
+
+After connecting to the node, you need to clone the `martini-workshop` repository into your home directory:
 ```
 git clone https://github.com/marrink-lab/martini-workshop.git
 cd martini-workshop
 ```
-
-Each tutorial will be completed their respective folders, here the needed files are present.
-
+We are now ready to start the tutorial! Each tutorial will be completed in their respective folders where all the files are prepared for use.
 
 > [!TIP]
 > If one of the simulations takes too long, you can download a worked example for each tutorial [here](https://github.com/marrink-lab/martini-workshop/...).
 
 These tutorials were written for the *"Workshop: Simulations and Visualization of a Minimal Bacterial Cell"* in Champaign-Urbana by *Jan Stevens, Marieke Westendorp, Mert Bozoflu*. Parts of this workshop were based on the [*2021 Martini online workshop*](http://cgmartini.nl/index.php/2021-martini-online-workshop).
-
-G

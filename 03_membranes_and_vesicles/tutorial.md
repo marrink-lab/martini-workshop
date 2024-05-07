@@ -395,7 +395,7 @@ sed '/DUM/d' memembed.pdb >> potassium_transporter_oriented.pdb
 The oriented protein structure can now be *martinized*, to create our CG Martini 3 model:
 
 ```{execute}
-martinize2 -f  potassium_transporter_oriented.pdb -x potassium_transporter_cg.pdb -p backbone -ff martini3001 -elastic -scfix -cys auto -ef 700.0 -el 0.5 -eu 0.9 -ea 0 -ep 0
+martinize2 -f  potassium_transporter_oriented.pdb -x potassium_transporter_cg.pdb -p backbone -ff martini3001 -elastic -scfix -cys auto -ef 700.0 -el 0.5 -eu 0.9 -ea 0 -ep 0 -merge A,B,C,D
 
 gmx editconf -f potassium_transporter_cg.pdb -o potassium_transporter_cg.gro
 ```

@@ -49,7 +49,12 @@ Generally, cleaning the structure comes down to removing any non-protein atoms, 
 
 ## Creating a CG model using _Martinize2_.
 
-Now we are ready to map the atomistic structure to a coarse-grain model using _Martinize2_.[^Martinize2] This coarse-graining step is well-automated but requires quite a few input options. We use the following:
+Now we are ready to map the atomistic structure to a coarse-grain model using _Martinize2_.[^Martinize2] Install _Martinize2_ by running:
+
+```
+pip3 install vermouth
+```
+This coarse-graining step is well-automated but requires quite a few input options. We use the following:
 
 - `-f`: path to the input structure.
 - `-o`: output path for the topology file

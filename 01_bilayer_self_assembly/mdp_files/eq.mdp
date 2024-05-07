@@ -93,11 +93,11 @@ tau_t                    = 1.0
 ref_t                    = 300
 Pcoupl                   = parrinello-rahman
 Pcoupltype               = semi-isotropic
-tau_p                    = 12.0 12.0
+tau_p                    = 12.0
 compressibility          = 3e-4 3e-4
 ref_p                    = 1.0 1.0
 
-gen_vel                  = yes
+gen_vel                  = no
 gen_temp                 = 300
 gen_seed                 = -1
 

@@ -23,7 +23,7 @@ cd 01_bilayer_self_assembly
 ```
 
 > [!TIP]
-> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1) 
+> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1)
 
 ### Programs
 
@@ -76,7 +76,7 @@ martini_v3.0.0_sugars_v1.itp
 ```
 Note that the Martini 3 release is organized into several `.itp` files, each with the definitions for a class of molecules. For this tutorial, you won’t need all of the Martini 3 .itps, only the one where water is defined (hint: it’s a ‘solvent’) and the one where POPC is defined (hint: it’s a ‘phospholipid’). There is a third .itp you will need, which is the one with all the Martini 3 particle definitions (hint: it’s `martini_v3.0.0.itp`). The needed .itps should be placed in the tutorial directory.
 
-To generate the `.top` file that describes the system topology to GROMACS, you can use the template below. Note that semi-colons indicate comments, which are ignored, but hashtags aren’t: they’re preprocessing directives. Namely, it is the `#include` directive that allows us to bring into the .top the particle/molecule information in the `.itps`. 
+To generate the `.top` file that describes the system topology to GROMACS, you can use the template below. Note that semi-colons indicate comments, which are ignored, but hashtags aren’t: they’re preprocessing directives. Namely, it is the `#include` directive that allows us to bring into the .top the particle/molecule information in the `.itps`.
 
 Use your editor of choice (gedit/vi/other) to create a file `topol.top` and copy/paste the template below.
 
@@ -108,9 +108,7 @@ Note that again, the value of the default van der Waals radii (`—radius`) has 
 <img src="../figures/01_initial_structure.png" width="50%"/>
 </div>
 
-<center>
 *__Figure 1: Starting structure__  Snapshot of the system before the simulation.*
-</center>
 
 ## A short energy minimization
 
@@ -119,7 +117,7 @@ Now that we have generated the initial structure for our simulation, we need to 
 ```sh {execute}
 mkdir -p em
 gmx grompp -f mdp_files/em.mdp -c 128_POPC_solvated.gro -p topol.top -o em/em.tpr
-gmx mdrun -v -s em/em.tpr -c em/em.gro
+gmx mdrun -v -deffnm md/md
 ```
 
 ## Running the MD simulation
@@ -127,8 +125,9 @@ gmx mdrun -v -s em/em.tpr -c em/em.gro
 Now you are ready to run the self-assembly MD simulation using the `md.mdp` settings file and the energy-minimized structure. A short simulation of *50* ns, or *2.5* million simulation steps at *20* fs per step, should suffice to observe the self-assembly:
 
 ```sh {execute}
-gmx grompp -f mdp_files/md.mdp -c minimized.gro -p topol.top -o md.tpr
-gmx mdrun -v -s md.tpr -x md.xtc -c md.gro
+mkdir -p md
+gmx grompp -f mdp_files/md.mdp -c em/em.gro -p topol.top -o md/md.tpr -maxwarn 1
+gmx mdrun -v -deffnm md/md
 ```
 
 This might take approximately *10* minutes on a single CPU but by default gmx mdrun will use all available CPUs on your machine. The `-v` option shows an estimate of the time to completion. See `gmx mdrun`’s help, `-h`, for instructions on how to tune the numbers of parallel threads used for the simulation. You may want to check the progress of the simulation to see whether the bilayer has already formed before the end of the simulation.
@@ -137,24 +136,22 @@ This might take approximately *10* minutes on a single CPU but by default gmx md
 <img src="../figures/01_bilayer.png" width="50%"/>
 </div>
 
-<center>
 *__Figure 2: Self-assembled lipid bilayer__ Snapshot of the simulation after a short MD simulation.*
-</center>
 
 ## Visualization
 
 You may want to check the progress of the simulation to see whether the bilayer has already formed before the end of the simulation. The easiest way to do this is to use [VMD](https://www.ks.uiuc.edu/Research/vmd/) (Visual Molecular Dynamics):
 
-```sh 
+```sh
 vmd em/em.gro md/md.xtc -e ../files/viz.vmd
 ```
 
 Here, we use the option `-e ../files/viz.vmd`, which loads in default representations for the Martini molecules in this workshop.
 
 > [!WARNING]
-> If you are already using a `.vmdrc` file, it might interfere with the visualizations in this tutorial. 
+> If you are already using a `.vmdrc` file, it might interfere with the visualizations in this tutorial.
 
-You will notice that the default visualization is not optimal. VMD suffers from the fact that Martini bonds are usually not drawn because they are much longer than the default atomistic bond lengths, which VMD expects. One way to circumvent this problem is by using a plugin script `cg_bonds-v5.tcl` that takes the GROMACS topology file and adds the Martini bonds defined in the topology. 
+You will notice that the default visualization is not optimal. VMD suffers from the fact that Martini bonds are usually not drawn because they are much longer than the default atomistic bond lengths, which VMD expects. One way to circumvent this problem is by using a plugin script `cg_bonds-v5.tcl` that takes the GROMACS topology file and adds the Martini bonds defined in the topology.
 
 To use this plugin, we must first make our topology files understandable for *cg_bonds*. This workshop will use `viz_top_writer.py,` to automate the *cleaning* of the topology files. This tool is provided in the `../files` directory, but you normally want to download it from [here](https://github.com/csbrasnett/martini_vis). In the vmd console run:
 
@@ -172,7 +169,7 @@ cg_bonds -top vis.top
 If all the steps went well, you're VMD window, should look similar to *Figure 2*.
 
 
-## Bilayer equilibrium run and analysis
+## Bilayer equilibrium run
 
 Before we continue, please check if your bilayer was formed in a plane other than the xy-plane. Make sure to rotate the system so that it will, for this step you can use:
 
@@ -184,15 +181,16 @@ In case you did not get a bilayer at all, please extend your previous simulation
 The spontaneous assembly simulation was done using isotropic pressure coupling. The bilayer may have formed but is probably under tension because of the isotropic pressure coupling. Therefore, we first need to run a simulation in which the area of the bilayer can reach a proper equilibrium value. This requires that we use independent pressure coupling in the plane and perpendicular to the plane. Set up a simulation for another 50 ns at zero surface tension (we switch to semi-isotropic pressure coupling; if the pressure is the same in the plane and perpendicular to the plane, the bilayer will be at zero surface tension).
 
 ```sh {execute}
+mkdir -p eq
 gmx grompp -f mdp_files/eq.mdp -c md/md.gro -p topol.top -o eq/eq.tpr
-gmx mdrun -v -s eq.tpr -x eq.xtc -c md/md.gro
+gmx mdrun -v -deffnm eq/eq
 ```
 
 <details>
 <summary> <strong> Good practices in membrane simulations </strong> </summary>
 
 
->To properly sample in an isothermal-isobaric ensemble, you should at this point switch to the Parrinello-Rahman barostat (12 ps is a typical tau-p value to use with it). The Parrinello-Rahman barostat is less robust than the Berendsen one, and may diverge (crash) if the system is far from equilibrium. As such, is usually used only on production runs, whereas Berendsen is used 
+>To properly sample in an isothermal-isobaric ensemble, you should at this point switch to the Parrinello-Rahman barostat (12 ps is a typical tau-p value to use with it). The Parrinello-Rahman barostat is less robust than the Berendsen one, and may diverge (crash) if the system is far from equilibrium. As such, is usually used only on production runs, whereas Berendsen is used
 in preparation ones.
 
 >Because of potentially poor heat transfer across the membrane-water interface, it is recommended that the solvent and the membrane groups of particles each be coupled to their own thermostat, to prevent unequal heat accumulation. You can set that in your .mdp using the tc-grps option.
@@ -200,6 +198,17 @@ in preparation ones.
 >Buildup in numerical precision error may cause the system to gain overall momentum. This is undesirable because such translation will be interpreted as temperature by the thermostat, and result in an excessively cooled system. Such center-of mass motion (COMM) is corrected using comm-mode = linear. When membranes are involved, it is also possible (even in the absence of precision errors, or when controlling for COMM) that the membrane phase gains momentum relative to the water phase. In this case, the COMM should be corrected for each phase separately, using the comm-grps option. In some applications, it may be needed to further correct for the COMM of each leaflet separately.
 
 </details>
+
+## Analysis
+
+Now that we have performed an equilibrium simulation of a lipid bilayer with Martini 3, we can analyse the trajectory. If you do not want to wait for the simulation, pre-run trajectories can be found in the [here]().
+
+
+For clarity, we create an analysis directory to write our output files into.
+
+```sh {execute}
+mkdir -p analysis
+```
 
 ### Bilayer thickness
 
@@ -215,15 +224,15 @@ gmx make_ndx -f eq/eq.gro
 
 
 ```sh
-gmx density -f eq/eq.xtc -s eq/eq.tpr -b 15000 -n index.ndx -o p-density.xvg
+gmx density -f eq/eq.xtc -s eq/eq.tpr -b 15000 -n index.ndx -o analysis/p-density.xvg
 
-    > 4 [press Enter]
+    > P* [press Enter]
 ```
 
 Now you can open the `.xvg` file with Xmgrace:
 
 ```sh
-xmgrace p-density.xvg 
+xmgrace analysis/p-density.xvg
 ```
 
 A more appropriate way to compare to experimental measurements is to calculate the electron density profile. The gmx density tool also provides this option. However, you need to supply the program with a data file containing the number of electrons associated with each bead (option -ei electrons.dat). The format is described in the gromacs manual and not part of this tutorial.
@@ -241,13 +250,19 @@ To conclude calculate the lateral diffusion of the lipids in the membrane. Note 
 ```sh
 gmx trjconv -f eq/eq.xtc -s eq/eq.tpr -pbc nojump -o eq/nojump.xtc
 
-gmx msd -f eq/nojump.xtc -s eq/eq.tpr -rmcomm -lateral z -b 15000
+    > POPC [press Enter]
+
+gmx msd -f eq/nojump.xtc -s eq/eq.tpr -lateral z -b 15000 -o analysis/msd.xvg
+
+    > POPC [press Enter]
+    > [press Ctrl-D]
+
 ```
 
 Now you can open the `.xvg` file with Xmgrace:
 
 ```
-xmgrace msd.xvg
+xmgrace analysis/msd.xvg
 ```
 
 In comparing the diffusion coefficient obtained from a Martini simulation to a measured one, one can expect a faster diffusion at the CG level due to the smoothened free energy landscape (note, however, that the use of a defined conversion factor is no longer recommended, as it can vary significantly depending on the molecule in question). Also note that the tool averages over all lipids to produce the MSD curve. It is probably much better to analyze the motion of each lipid individually and remove center-of-mass motion per leaflet.

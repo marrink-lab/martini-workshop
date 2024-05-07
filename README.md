@@ -62,7 +62,15 @@ ssh gpua028
 > [!WARNING]
 > Make sure to replace `gpua028` by the node assigned to you!
 
-After connecting to the node, you need to clone the `martini-workshop` repository into your home directory:
+After connecting to the node, the required modules have to be loaded on Delta:
+```
+module load openmpi/4.1.5+cuda
+module load gromacs/2024.1.cuda
+module load python/3.11.6
+module load rust
+```
+
+Finally, you need to clone the `martini-workshop` repository into your home directory:
 ```
 git clone https://github.com/marrink-lab/martini-workshop.git
 cd martini-workshop

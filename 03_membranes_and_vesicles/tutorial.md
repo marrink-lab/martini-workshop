@@ -10,19 +10,49 @@ version: beta
 ---
 
 # Simulating Membranes and Vesicles with TS2CG
+An integral component of a cell is its envelope, a membrane made up of a mixture of lipids and proteins that separates the cytosol (proteins, metabolites, etc.) from the extracellular space. In this tutorial, we will discuss how to use _TS2CG_ to construct these large lipid membranes.
+
+To start this tutorial, don't forget to navigate to the respective folder in the `martini-workshop` repository:
+
+```sh
+cd 02_protein_basics
+```
+
+> [!TIP]
+> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1)  
+ 
+### Programs
+
+In this tutorial, we will use the following programs.
+
+- `TS2CG`.
+- `gmx` (`source .../GMXRC`).
+- Common command line utilities.
+
+To install TS2CG, download the latest version of the _TS2CG_ from
+
+```{execute}
+git clone https://github.com/marrink-lab/TS2CG1.1
+cd TS2CG1.1
+```
+
+For compiling, *gcc* version 8.3.0 or above is needed.
+
+In the source code folder, execute the script `compile.sh` as
+
+```{execute}
+./compile.sh
+```
+
+In this folder, two binary files will be generated: Pointillism (`PLM`) and CG Membrane Builder (`PCG`).
 
 ## Introduction
 
-An integral component of building whole-cell models is constructing the structural barrier that seperates
-the cytosol (i.e. proteins, metabolites, ...) from the extracellular space: the cell envelope. The
-cell envelope is a membrane composed of mixture of lipids and proteins encapsulating the cytosol. In
-this tutorial we will discuss how to use **TS2CG** to construct these large lipid membranes.
-
-**TS2CG** is a tool which can be used to build coarse-grained (CG) membrane models with user-defined shapes and compositions. Initially, it was developed for backmapping dynamically triangulated simulation
+_TS2CG_ is a tool which can be used to build coarse-grained (CG) membrane models with user-defined shapes and compositions. Initially, it was developed for backmapping dynamically triangulated simulation
 structures into their corresponding molecular models. This gives us the possibility to incorporate
 experimentally obtained membrane shapes and compositions and generate CG membrane's initial structure.
 
-In *Figure 1* the general workflow of **TS2CG** is exemplified for a vesicle containing a single protein
+In *Figure 1* the general workflow of _TS2CG_ is exemplified for a vesicle containing a single protein
 (shown as a yellow bead). The initial triangulated surface is rescaled to the desired system size
 and the two monolayers are generated. In order to have enough points for the subsequent lipid
 placement, the number of vertices in both monolayers is increased using a *pointillism* operation,
@@ -31,8 +61,8 @@ a factor of four. In the last steps, proteins and lipids are placed on the respe
 more details on the method, please refer to the original paper [^TS2CG]
 
 ![workflow figure](../figures/03_workflow.png)
-*__Figure 1: Overview of the TS2CG workflow:__ Steps in backmapping a triangulated surface (TS) mesh
-using **TS2CG**. Steps in backmapping a triangulated surface (TS) mesh using **TS2CG**. (Step 1) A
+*__Figure 1: Overview of the _TS2CG_ workflow:__ Steps in backmapping a triangulated surface (TS) mesh
+using _TS2CG_. Steps in backmapping a triangulated surface (TS) mesh using _TS2CG_. (Step 1) A
 TS structure of a vesicle containing one protein (yellow bead) is rescaled and two TS structures
 corresponding to the two monolayers that are generated. (Step 2) Using a Pointillism operation, the
 number of vertices is increased. (Step 3) The CG protein structure together with a membrane segment
@@ -52,33 +82,11 @@ the configuration is ready for subsequent MD simulation. [^TS2CG]*
     </table>
 </div>
 
-
-*__Figure 2: Example applications of TS2CG__ Example applications of **TS2CG**. Mitochodrion lipid
+__Figure 2: Example applications of TS2CG__ Example applications of _TS2CG_. Mitochodrion lipid
 membrane backmapped from EM map (upper panel left), protein induced membrane tubulation backmapped
 from DTS simulation (upper panel right), budded lipid bilayer including STxB proteins backmapped
 from DTS simulation (lower panel left) and curved lipid bilayer with two different lipid types
-created from scratch using **PCG**. [^TS2CG]*
-
-
-
-## Download and install TS2CG
-
-Download the latest version of the **TS2CG** from
-
-```{execute}
-git clone https://github.com/marrink-lab/TS2CG1.1
-cd TS2CG1.1
-```
-
-For compiling, *gcc* version 8.3.0 or above is needed.
-
-In the source code folder, execute the script `compile.sh` as
-
-```{execute}
-./compile.sh
-```
-
-In this folder, two binary files will be generated: Pointillism (`PLM`) and CG Membrane Builder (`PCG`).
+created from scratch using **PCG**. [^TS2CG]
 
 ## Building a vesicle
 
@@ -102,20 +110,16 @@ executing the following command:
 PLM -TSfile sphere.tsi -bilayerThickness 3.8 -rescalefactor 4 4 4 -Mashno 4
 ```
 
-The initial `sphere.tsi` is `4 nm` in radius, we rescale it a factor 5 in all direction. Since
-the overall mesh becomes larger we also have to increase the number of point, here we subsample
-each triangle twice (-Mashno 2), increasing the number of vertices by a factor of `4^2`.
-For a cell of 400nm in radius we would need a rescale the mesh a hundred times in all three
-dimensions (-rescalefactor 100 100 100) and use increase the number a thousand fold (-mashno 6).
+The initial `sphere.tsi` is only `4 nm` in radius, for our purpose we rescale it by a factor 5 in all direction. Since
+the overall mesh becomes larger we also have to increase the number of point, here we subsample each triangle twice (`-Mashno 4`), increasing the number of vertices by a factor of `4^2`. For a cell of 400nm in radius we would need a rescale the mesh a hundred times in all three dimensions (-rescalefactor 100 100 100) and use increase the number a thousand fold (-mashno 6).
 
 If the command completes successfully two directories have been created in the current working directory.
 In the pointvisualization_data folder, you will find gromacs compatible structure files
 (`.gro`) for the upper and lower monolayer including a topology file (`.top`).
-You can have inspect the created points using VMD. The other folder is named point and will be used
-by the CG Membrane Builder to create the CG model. This folder contains files which store a higher
-level detailed information of the pointillised mesh (coordinates/normals/curvature).
+You can have inspect the created points using VMD. The other folder is named `point` and will be used
+by the CG Membrane Builder to create the CG model. This folder contains files that store detailed information about the pointillized mesh, including coordinates, normals, and curvature.
 
-The second step to create a vesicle is two place lipids on the generated points using **PCG**. For this
+The second step to create a vesicle is to place lipids on the generated points using **PCG**. For this
 you need to write a `.str` file defining the lipid composition of both monolayers.
 Using any text editor, create an `input.str` file and write the following text in it:
 
@@ -134,9 +138,9 @@ The other thing we need is a lipid structure file (`.LIB`). This file simply def
 connectivity for placing the lipid beads on the previously generated points. Making this file is
 easy but might be time consuming for many different lipids. (See the User Manual for the exact file
 format). Luckily, we already have a file that contains all Martini3 lipids called `Martini3.LIB`,
-you can find it in the files folder.
+which you can find in the files folder.
 
-Using these two files now you can execute **PCG**:
+Using these two files now, you can execute **PCG**:
 
 - `-str`: input file (default: `input.str`)
 - `-function`: backmap/analytical_shape (default: backmap)
@@ -190,7 +194,7 @@ output should look like *Figure 3*.
 If you are making a membrane with a simple shape, creating TS file (i.e. mesh) can be a cumbersome
 intermediate step.
 In these cases it is often easier to use an analytical shape definition instead of the TS file.
-This functionality is also supported in **TS2CG** by means of the `analytical_shape` option of **PCG**.
+This functionality is also supported in _TS2CG_ by means of the `analytical_shape` option of **PCG**.
 
 The analytical shape is specified by adding `[ Shape Data ]` section to the `input.str` file. In
 this section you can specify the type of analytical shape (sphere, cylinder, 1D fourier, flat) and
@@ -343,15 +347,13 @@ output should look like *Figure 4*.
 
 *__Figure 4__: Left panel: Snapshot of the mixed POPC (green /purple) / CHOL (light green) bilayer. Right panel: The topology file corresponding to the build system.*
 
-*__Figure 3__: Left panel: Snapshot of the simple POPC membrane we created. Right panel: The topology file corresponding to the build system.*
-
 ## Adding proteins to a membrane
 
 Besides lipids, the envelope of a cell is also composed of a large set of membrane proteins. For
 the JCVI-Syn3A one of those proteins is a tetrameric complex which acts as potassium transporter.
 
 
-To start we have to point **TS2CG** to the protein structure we want to include in our membrane.
+To start we have to point _TS2CG_ to the protein structure we want to include in our membrane.
 Similar to the topology files in **GROMACS** this is done by adding an `include` statement at the
 top of the `input.str` file.
 
@@ -366,20 +368,31 @@ include potassium_transporter_cg.gro
 <details>
 <summary> <strong>Details:</strong> How to create and orient the protein model:</summary>
 
-### Creating and orienting a protein model
+### Creating and orienting a Martini membrane protein
 
-The file `potassium_transporter_aa.pdb` has been provided.
+We start from an all-atom membrane protein structure, in this case, a potassium transporter. The structure is provided in the file `potassium_transporter_aa.pdb`. <br>
+First, we need to orient the membrane protein to insert it correctly into the membrane; for this, we use _memembed_ [^memembed]. To install _memembed_ run:
 
-```{execute}
-memembed -o memembed.pdb potassium_transporter_aa.pdb
+```
+git clone https://github.com/timnugent/memembed
+cd memembed 
+make -j8
+cd ..
 ```
 
-Visually inspect the generated file `memembed.pdb` and confirm that the orientation of the protein
-in the membrane makes sense.
+Now we can run _memembed_ with the locally compiled executable:
+
+```{execute}
+memembed/bin/memembed -o memembed.pdb potassium_transporter_aa.pdb
+```
+
+The generated file `memembed.pdb` will contain both a membrane and the oriented membrane protein.
+Inspect the file `memembed.pdb` and confirm that the orientation of the protein in the membrane makes sense. If so, we can remove the membrane and continue with the oriented protein:
 
 ```{execute}
 sed '/DUM/d' memembed.pdb >> potassium_transporter_oriented.pdb
 ```
+The oriented protein structure can now be *martinized*, to create our CG Martini 3 model:
 
 ```{execute}
 martinize2 -f  potassium_transporter_oriented.pdb -x potassium_transporter_cg.pdb -p backbone -ff martini3001 -elastic -scfix -cys auto -ef 700.0 -el 0.5 -eu 0.9 -ea 0 -ep 0
@@ -413,7 +426,7 @@ inclusion      2
 ```
 
 Now that we have defined our membrane protein in the input file and also labeled where it
-should be placed, we can run the regular **TS2CG** protocol. Similar to before, run the following
+should be placed, we can run the regular _TS2CG_ protocol. Similar to before, run the following
 commands:
 
 ```{execute}
@@ -459,31 +472,40 @@ mixture made with VMD (left) and the corresponding topology file (right).*
 
 ## Visualisation
 
-```sh 
-vmd em/em.gro md/md.xtc -e ../files/viz.vmd
-```
+A few steps are required to visualize the membranes, as shown in the figures. We can load in representations for the Martini molecules prepared for this tutorial using the command:
 
-Here, we use the option `-e ../files/viz.vmd`, which loads in default representations for the Martini molecules in this workshop.
+```sh 
+vmd output.gro -e ../files/viz.vmd
+```
 
 > [!WARNING]
 > If you are already using a `.vmdrc` file, it might interfere with the visualizations in this tutorial. 
 
 You will notice that the default visualization is not optimal. VMD suffers from the fact that Martini bonds are usually not drawn because they are much longer than the default atomistic bond lengths, which VMD expects. One way to circumvent this problem is by using a plugin script `cg_bonds-v5.tcl` that takes the GROMACS topology file and adds the Martini bonds defined in the topology. 
 
-To use this plugin, we must first make our topology files understandable for *cg_bonds*. This workshop will use `viz_top_writer.py,` to automate the *cleaning* of the topology files. This tool is provided in the `../files` directory, but you normally want to download it from [here](https://github.com/csbrasnett/martini_vis). In the vmd console run:
+First, we must complete the topology file generated by _TS2CG_. For our purpose, we need to add two lines to the top of the file 'output.top' that include the Martini 3 lipid parameters:
+
+```
+#include "./martini_v3.0.0/martini_v3.0.0.itp"
+#include "./martini_v3.0_phospholipids.itp"
+```
+> [!WARNING]
+> To visualize the vesicle with the inserted membrane proteins, create a topology file for the membrane protein and add it to the included .itp files.
+
+Next, we will use `viz_top_writer.py,` to prepare our topology files for *cg_bonds*. This tool is provided in the `../files` directory, but you normally want to download it from [here](https://github.com/csbrasnett/martini_vis). In the VMD console run:
 
 ```tcl
 ../files/vis_top_writer.py -p topol.top
 ```
 
-If successful, a file named `vis.top` is created in your current directory with necessary adjustments. Now that we have our visualization topology, we can run *cg_bonds* inside the vmd terminal. The script is again provided in the `../files` directory, but you would normally want to download it from [here](http://cgmartini.nl/index.php/tools2/visualization). Now you can create the CG bonds in VMD by running:
+If successful, a file named `vis.top` will be created in your current directory with the necessary adjustments. Now that we have our visualization topology, we can run *cg_bonds* inside the vmd terminal. The script is again provided in the `../files` directory, but you would normally want to download it from [here](http://cgmartini.nl/index.php/tools2/visualization). Now you can create the CG bonds in VMD by running:
 
 ```tcl
 source ../files/cg_bonds-v5.tcl
 
 cg_bonds -top vis.top
 ```
-If all the steps went well, you're VMD window, should look similar to *Figure 2*.
+If all the steps went well, your VMD window should look similar to Figure 2.
 
 
 ## `.tsi` file format
@@ -525,6 +547,6 @@ The following shows a part of a `.tsi` file with all necessary keywords highligh
 2      2     30      0     1
 ```
 
-## References
 [^TS2CG]: Pezeshkian, W., König, M., Wassenaar, T.A. et al. Backmapping triangulated surfaces to coarse-grained membrane models. Nat Commun 11, 2296 (2020). https://doi.org/10.1038/s41467-020-16094-y
 [^UserManual]: https://github.com/marrink-lab/TS2CG1.1/blob/master/User_Manual.docx
+[^memembed]: https://github.com/timnugent/memembed?tab=readme-ov-file

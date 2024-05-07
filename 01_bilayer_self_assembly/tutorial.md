@@ -169,7 +169,7 @@ cg_bonds -top vis.top
 If all the steps went well, you're VMD window, should look similar to *Figure 2*.
 
 
-## Bilayer equilibrium run and analysis
+## Bilayer equilibrium run
 
 Before we continue, please check if your bilayer was formed in a plane other than the xy-plane. Make sure to rotate the system so that it will, for this step you can use:
 
@@ -199,6 +199,17 @@ in preparation ones.
 
 </details>
 
+## Analysis
+
+Now that we have performed an equilibrium simulation of a lipid bilayer with Martini 3, we can analyse the trajectory. If you do not want to wait for the simulation, pre-run trajectories can be found in the [here]().
+
+
+For clarity, we create an analysis directory to write our output files into.
+
+```sh {execute}
+mkdir -p analysis
+```
+
 ### Bilayer thickness
 
 As a first analysis we measure the overall bilayer thickness, using `gmx density`. You can get the density for a number of different functional groups in the lipid (e.g., phosphate and ammonium headgroup beads, carbon tail beads, etc) by feeding an appropriate index-file to `gmx density`. You can estimate the bilayer thickness from the distance between the headgroup peaks in the density profile.
@@ -213,15 +224,15 @@ gmx make_ndx -f eq/eq.gro
 
 
 ```sh
-gmx density -f eq/eq.xtc -s eq/eq.tpr -b 15000 -n index.ndx -o p-density.xvg
+gmx density -f eq/eq.xtc -s eq/eq.tpr -b 15000 -n index.ndx -o analysis/p-density.xvg
 
-    > 4 [press Enter]
+    > P* [press Enter]
 ```
 
 Now you can open the `.xvg` file with Xmgrace:
 
 ```sh
-xmgrace p-density.xvg
+xmgrace analysis/p-density.xvg
 ```
 
 A more appropriate way to compare to experimental measurements is to calculate the electron density profile. The gmx density tool also provides this option. However, you need to supply the program with a data file containing the number of electrons associated with each bead (option -ei electrons.dat). The format is described in the gromacs manual and not part of this tutorial.
@@ -239,13 +250,19 @@ To conclude calculate the lateral diffusion of the lipids in the membrane. Note 
 ```sh
 gmx trjconv -f eq/eq.xtc -s eq/eq.tpr -pbc nojump -o eq/nojump.xtc
 
-gmx msd -f eq/nojump.xtc -s eq/eq.tpr -rmcomm -lateral z -b 15000
+    > POPC [press Enter]
+
+gmx msd -f eq/nojump.xtc -s eq/eq.tpr -lateral z -b 15000 -o analysis/msd.xvg
+
+    > POPC [press Enter]
+    > [press Ctrl-D]
+
 ```
 
 Now you can open the `.xvg` file with Xmgrace:
 
 ```
-xmgrace msd.xvg
+xmgrace analysis/msd.xvg
 ```
 
 In comparing the diffusion coefficient obtained from a Martini simulation to a measured one, one can expect a faster diffusion at the CG level due to the smoothened free energy landscape (note, however, that the use of a defined conversion factor is no longer recommended, as it can vary significantly depending on the molecule in question). Also note that the tool averages over all lipids to produce the MSD curve. It is probably much better to analyze the motion of each lipid individually and remove center-of-mass motion per leaflet.

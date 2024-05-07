@@ -117,7 +117,7 @@ Now that we have generated the initial structure for our simulation, we need to 
 ```sh {execute}
 mkdir -p em
 gmx grompp -f mdp_files/em.mdp -c 128_POPC_solvated.gro -p topol.top -o em/em.tpr
-gmx mdrun -v -s em/em.tpr -c em/em.gro
+gmx mdrun -v -deffnm md/md
 ```
 
 ## Running the MD simulation
@@ -126,8 +126,8 @@ Now you are ready to run the self-assembly MD simulation using the `md.mdp` sett
 
 ```sh {execute}
 mkdir -p md
-gmx grompp -f mdp_files/md.mdp -c em/em.gro -p topol.top -o md.tpr
-gmx mdrun -v -s md/md.tpr -x md/md.xtc -c md/md.gro
+gmx grompp -f mdp_files/md.mdp -c em/em.gro -p topol.top -o md/md.tpr -maxwarn 1
+gmx mdrun -v -deffnm md/md
 ```
 
 This might take approximately *10* minutes on a single CPU but by default gmx mdrun will use all available CPUs on your machine. The `-v` option shows an estimate of the time to completion. See `gmx mdrun`’s help, `-h`, for instructions on how to tune the numbers of parallel threads used for the simulation. You may want to check the progress of the simulation to see whether the bilayer has already formed before the end of the simulation.
@@ -182,7 +182,7 @@ The spontaneous assembly simulation was done using isotropic pressure coupling. 
 
 ```sh {execute}
 gmx grompp -f mdp_files/eq.mdp -c md/md.gro -p topol.top -o eq/eq.tpr
-gmx mdrun -v -s eq.tpr -x eq.xtc -c md/md.gro
+gmx mdrun -v -deffnm eq/eq
 ```
 
 <details>

@@ -23,7 +23,7 @@ cd 01_bilayer_self_assembly
 ```
 
 > [!TIP]
-> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1) 
+> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1)
 
 ### Programs
 
@@ -76,7 +76,7 @@ martini_v3.0.0_sugars_v1.itp
 ```
 Note that the Martini 3 release is organized into several `.itp` files, each with the definitions for a class of molecules. For this tutorial, you won’t need all of the Martini 3 .itps, only the one where water is defined (hint: it’s a ‘solvent’) and the one where POPC is defined (hint: it’s a ‘phospholipid’). There is a third .itp you will need, which is the one with all the Martini 3 particle definitions (hint: it’s `martini_v3.0.0.itp`). The needed .itps should be placed in the tutorial directory.
 
-To generate the `.top` file that describes the system topology to GROMACS, you can use the template below. Note that semi-colons indicate comments, which are ignored, but hashtags aren’t: they’re preprocessing directives. Namely, it is the `#include` directive that allows us to bring into the .top the particle/molecule information in the `.itps`. 
+To generate the `.top` file that describes the system topology to GROMACS, you can use the template below. Note that semi-colons indicate comments, which are ignored, but hashtags aren’t: they’re preprocessing directives. Namely, it is the `#include` directive that allows us to bring into the .top the particle/molecule information in the `.itps`.
 
 Use your editor of choice (gedit/vi/other) to create a file `topol.top` and copy/paste the template below.
 
@@ -108,9 +108,7 @@ Note that again, the value of the default van der Waals radii (`—radius`) has 
 <img src="../figures/01_initial_structure.png" width="50%"/>
 </div>
 
-<center>
 *__Figure 1: Starting structure__  Snapshot of the system before the simulation.*
-</center>
 
 ## A short energy minimization
 
@@ -127,8 +125,9 @@ gmx mdrun -v -s em/em.tpr -c em/em.gro
 Now you are ready to run the self-assembly MD simulation using the `md.mdp` settings file and the energy-minimized structure. A short simulation of *50* ns, or *2.5* million simulation steps at *20* fs per step, should suffice to observe the self-assembly:
 
 ```sh {execute}
-gmx grompp -f mdp_files/md.mdp -c minimized.gro -p topol.top -o md.tpr
-gmx mdrun -v -s md.tpr -x md.xtc -c md.gro
+mkdir -p md
+gmx grompp -f mdp_files/md.mdp -c em/em.gro -p topol.top -o md.tpr
+gmx mdrun -v -s md/md.tpr -x md/md.xtc -c md/md.gro
 ```
 
 This might take approximately *10* minutes on a single CPU but by default gmx mdrun will use all available CPUs on your machine. The `-v` option shows an estimate of the time to completion. See `gmx mdrun`’s help, `-h`, for instructions on how to tune the numbers of parallel threads used for the simulation. You may want to check the progress of the simulation to see whether the bilayer has already formed before the end of the simulation.
@@ -137,24 +136,22 @@ This might take approximately *10* minutes on a single CPU but by default gmx md
 <img src="../figures/01_bilayer.png" width="50%"/>
 </div>
 
-<center>
 *__Figure 2: Self-assembled lipid bilayer__ Snapshot of the simulation after a short MD simulation.*
-</center>
 
 ## Visualization
 
 You may want to check the progress of the simulation to see whether the bilayer has already formed before the end of the simulation. The easiest way to do this is to use [VMD](https://www.ks.uiuc.edu/Research/vmd/) (Visual Molecular Dynamics):
 
-```sh 
+```sh
 vmd em/em.gro md/md.xtc -e ../files/viz.vmd
 ```
 
 Here, we use the option `-e ../files/viz.vmd`, which loads in default representations for the Martini molecules in this workshop.
 
 > [!WARNING]
-> If you are already using a `.vmdrc` file, it might interfere with the visualizations in this tutorial. 
+> If you are already using a `.vmdrc` file, it might interfere with the visualizations in this tutorial.
 
-You will notice that the default visualization is not optimal. VMD suffers from the fact that Martini bonds are usually not drawn because they are much longer than the default atomistic bond lengths, which VMD expects. One way to circumvent this problem is by using a plugin script `cg_bonds-v5.tcl` that takes the GROMACS topology file and adds the Martini bonds defined in the topology. 
+You will notice that the default visualization is not optimal. VMD suffers from the fact that Martini bonds are usually not drawn because they are much longer than the default atomistic bond lengths, which VMD expects. One way to circumvent this problem is by using a plugin script `cg_bonds-v5.tcl` that takes the GROMACS topology file and adds the Martini bonds defined in the topology.
 
 To use this plugin, we must first make our topology files understandable for *cg_bonds*. This workshop will use `viz_top_writer.py,` to automate the *cleaning* of the topology files. This tool is provided in the `../files` directory, but you normally want to download it from [here](https://github.com/csbrasnett/martini_vis). In the vmd console run:
 
@@ -192,7 +189,7 @@ gmx mdrun -v -s eq.tpr -x eq.xtc -c md/md.gro
 <summary> <strong> Good practices in membrane simulations </strong> </summary>
 
 
->To properly sample in an isothermal-isobaric ensemble, you should at this point switch to the Parrinello-Rahman barostat (12 ps is a typical tau-p value to use with it). The Parrinello-Rahman barostat is less robust than the Berendsen one, and may diverge (crash) if the system is far from equilibrium. As such, is usually used only on production runs, whereas Berendsen is used 
+>To properly sample in an isothermal-isobaric ensemble, you should at this point switch to the Parrinello-Rahman barostat (12 ps is a typical tau-p value to use with it). The Parrinello-Rahman barostat is less robust than the Berendsen one, and may diverge (crash) if the system is far from equilibrium. As such, is usually used only on production runs, whereas Berendsen is used
 in preparation ones.
 
 >Because of potentially poor heat transfer across the membrane-water interface, it is recommended that the solvent and the membrane groups of particles each be coupled to their own thermostat, to prevent unequal heat accumulation. You can set that in your .mdp using the tc-grps option.
@@ -223,7 +220,7 @@ gmx density -f eq/eq.xtc -s eq/eq.tpr -b 15000 -n index.ndx -o p-density.xvg
 Now you can open the `.xvg` file with Xmgrace:
 
 ```sh
-xmgrace p-density.xvg 
+xmgrace p-density.xvg
 ```
 
 A more appropriate way to compare to experimental measurements is to calculate the electron density profile. The gmx density tool also provides this option. However, you need to supply the program with a data file containing the number of electrons associated with each bead (option -ei electrons.dat). The format is described in the gromacs manual and not part of this tutorial.

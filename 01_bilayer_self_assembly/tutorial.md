@@ -181,6 +181,7 @@ In case you did not get a bilayer at all, please extend your previous simulation
 The spontaneous assembly simulation was done using isotropic pressure coupling. The bilayer may have formed but is probably under tension because of the isotropic pressure coupling. Therefore, we first need to run a simulation in which the area of the bilayer can reach a proper equilibrium value. This requires that we use independent pressure coupling in the plane and perpendicular to the plane. Set up a simulation for another 50 ns at zero surface tension (we switch to semi-isotropic pressure coupling; if the pressure is the same in the plane and perpendicular to the plane, the bilayer will be at zero surface tension).
 
 ```sh {execute}
+mkdir -p eq
 gmx grompp -f mdp_files/eq.mdp -c md/md.gro -p topol.top -o eq/eq.tpr
 gmx mdrun -v -deffnm eq/eq
 ```

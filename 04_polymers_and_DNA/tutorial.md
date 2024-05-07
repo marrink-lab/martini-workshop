@@ -73,6 +73,7 @@ ssDNA 0 100
 ; model lp first residue last residue
 WCM 1.0 0 24
 ```
+
 In the above file the molecule directive contains the molecule name as well as the molecule indices starting at 0. Because we have 100 ssDNA strands we have to specify molecules from 0 to 100. After the molecule directive, we specify the persistence_length directive: First, you provide the WCM keyword followed by the persistence length in nm. Subsequently, the first and last residue of the chain has to be specified. To generate the chain coordinates call _Polyply_ in the following fashion:
 
 - `-p`: topology file (`.top`)
@@ -138,15 +139,16 @@ The minimized structure should look like Figure 2.
 
 ## Confined polymers
 
-To conclude, we will generate ssDNA enclosed inside the model cell envelope we generated in tutorial III. For convenience, we choose to generate a polyT strand os ssDNA.
-
-The
+To conclude, we will generate ssDNA enclosed inside the model cell envelope we generated in tutorial III. For convenience, we choose to generate a polyT strand of ssDNA.
 
 ```{execute}
 polyply gen_params -lib martini2 -o ssDNA.itp -name ssDNA -seq DT5:1 DT:1000 DT3:1
 ```
 
-For this long piece of ssDNA reduce the
+We will pack a long piece of ssDNA inside a spherical confinement, mimicking the lipid vesicle. To generate the starting structure, a topology file is needed. 
+
+Create a topology file named `topol.top` and copy the following contents into it.
+
 ```text
 #include "martini_v2.1-dna.itp"
 #include "martini_v2.0_ions.itp"
@@ -157,6 +159,7 @@ ssDNA in capsid in water
 ssDNA 1
 ```
 
+To specify the settings needed to generate the starting of our ssDNA to _Polyply_, we need to write a build_file.
 
 ```text
 [ volumes ]
@@ -169,12 +172,26 @@ DT 0 1002 in 8.0 8.0 8.0 8.0
 
 ```
 
+In the above file, the volumes directive contains the molecule name and its associated volume. Increasing the residue volume is a computationally cheap method of controlling the polymer's stiffness. After the molecule directive, we specify the `[ sphere ]` directive, giving information on the geometric constraints. We confine the ssDNA in into a sphere of radius 8, located at a central point with coordinates x=8.0, y=8.0, z=8.0.
+
 >[!NOTE]
 > In the build file, we define geometric constraints per *resname* per *molecule*.
+
+To generate the chain coordinates call _Polyply_ in the following fashion:
 
 ```{execute}
 polyply gen_coords -p topol.top -b build_file.bld -name ssDNA -box 20 20 20 -o output.gro
 ```
+
+Next, we have to run an energy minimization on the system.
+
+```
+mkdir -p em
+gmx grompp -f mdp_files/em.mdp -p topol.top -c output.gro -o em/em.tpr
+gmx mdrun -v -deffnm em/em
+```
+
+The minimized structure should look like Figure 3.
 
 <div align="center">
 <img src="../figures/04_confined_ssDNA.png" width="50%"/>

@@ -117,7 +117,7 @@ Now that we have generated the initial structure for our simulation, we need to 
 ```sh {execute}
 mkdir -p em
 gmx grompp -f mdp_files/em.mdp -c 128_POPC_solvated.gro -p topol.top -o em/em.tpr
-gmx mdrun -v -deffnm md/md
+gmx mdrun -v -deffnm em/em
 ```
 
 ## Running the MD simulation

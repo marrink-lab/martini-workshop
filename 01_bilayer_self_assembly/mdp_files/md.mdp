@@ -16,7 +16,6 @@ title                    = Martini
 
 integrator               = md
 dt                       = 0.02
-;nsteps                   = 5000000
 nsteps                   = 2500000
 nstcomm                  = 100
 comm-grps		         =
@@ -24,9 +23,9 @@ comm-grps		         =
 nstxout                  = 0
 nstvout                  = 0
 nstfout                  = 0
-nstlog                   = 500000
+nstlog                   = 25000
 nstenergy                = 100
-nstxout-compressed       = 50000
+nstxout-compressed       = 25000
 compressed-x-precision   = 1000
 compressed-x-grps        =
 energygrps               =
@@ -62,9 +61,6 @@ pbc                      = xyz
 verlet-buffer-tolerance  = 0.005
 
 coulombtype              = reaction-field
-;coulombtype              = PME
-;pme_order                = 4         ; cubic interpolation
-;fourierspacing           = 0.125     ; grid spacing for FFT
 rcoulomb                 = 1.1
 epsilon_r                = 15	; 2.5 (with polarizable water)
 epsilon_rf               = 0
@@ -97,13 +93,13 @@ tau_t                    = 1.0
 ref_t                    = 300
 Pcoupl                   = parrinello-rahman
 Pcoupltype               = isotropic
-tau_p                    = 12.0 ; 12.0  ;parrinello-rahman is more stable with larger tau-p, DdJ, 20130422
-compressibility          = 3e-4 ;  3e-4
-ref_p                    = 1.0  ; 1.0
+tau_p                    = 12.0
+compressibility          = 3e-4
+ref_p                    = 1.0
 
-gen_vel                  = no
+gen_vel                  = yes
 gen_temp                 = 300
-gen_seed                 = 473529
+gen_seed                 = -1
 
 ; MARTINI and CONSTRAINTS
 ; for ring systems and stiff bonds constraints are defined

@@ -222,7 +222,7 @@ First, we will introduce water into the system using an equilibrated box of Mart
 
 ```sh {execute}
 mkdir -p sol
-gmx solvate -cp em_vac/em_vac.gro -cs mdp_files/water.gro -radius 0.21 -o sol/sol.gro
+gmx solvate -cp em_vac/em_vac.gro -cs mdp_files/water.gro -radius 0.21 -o sol/sol.gro -p topol.top
 ```
 
 The default van der Waals radii has to be increased (`-radius 0.21`) from its default atomistic length (*0.105 nm*) to a value reflecting the size of Martini CG beads.<br>

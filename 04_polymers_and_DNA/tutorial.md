@@ -146,7 +146,7 @@ The minimized structure should look like Figure 2.
 
 ## Confined polymers
 
-To conclude, we will generate ssDNA enclosed inside the model cell envelope we generated in tutorial III. For convenience, we choose to generate a polyT strand of ssDNA.
+To conclude, we will generate ssDNA enclosed inside the model cell envelope we generated in tutorial III. For convenience, we choose to generate a long polyT strand of ssDNA.
 
 ```{execute}
 polyply gen_params -lib martini2 -o ssDNA.itp -name ssDNA -seq DT5:1 DT:1000 DT3:1
@@ -205,6 +205,8 @@ The minimized structure should look like Figure 3.
 </div>
 
 *__Figure 3: Confined polymer.__  Starting structure of the ssDNA enclosed in a spherical boundary.*
+
+To verify that the building of the ssDNA was successful, visualize it together with the vesicle (`vesicle.gro`) present in the current directory.
 
 ## References
 [^Polyply]: Grünewald, F., Alessandri, R., Kroon, P.C. et al. Polyply; a python suite for facilitating simulations of macromolecules and nanomaterials. Nat Commun 13, 68 (2022). https://doi.org/10.1038/s41467-021-27627-4

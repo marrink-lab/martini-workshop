@@ -139,7 +139,7 @@ gmx mdrun -v -deffnm em/em
 The minimized structure should look like Figure 2.
 
 <div align="center">
-<img src="../figures/04_ssDNA_melt.png" width="50%"/>
+<img src="../figures/04_circular_ssDNA_melt.png" width="50%"/>
 </div>
 
 *__Figure 2: Melt of circular polymers.__  Starting structure of the polymer melt.*

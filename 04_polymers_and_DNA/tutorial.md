@@ -111,19 +111,19 @@ The minimized structure should look like Figure 1.
 *__Figure 1: Polymer melt.__  Starting structure of the polymer melt.*
 
 ## Circular polymers
-Let us now also have a look at how to make circular ssDNA. The simplest way to proceed is to specify the sequence in `.ig` form that specifies a circular sequence by adding a 2 as the last character of the sequence. 
+Let us now also have a look at how to make circular ssDNA. The simplest way to proceed is to specify the sequence in `.ig` form that specifies a circular sequence by adding a 2 as the last character of the sequence. Create a sequence file (`sequence.ig`) containing the following lines:
 
 ```
 ; Circular DNA
 Random 25 bp sequence
 TCCCGGCGAACTTAAAGTTGTAATG2
 ```
-To generate the circular ssDNA `.itp` file simply run:
+To generate the circular ssDNA `.itp` file run:
 
 ```{execute}
 polyply gen_params -lib martini2 -o ssDNA.itp -name ssDNA -seqf sequence.ig
 ```
-Next using the topology file from the previous example. Coordinates are generated as before; we just have to add a command line flag that tells _Polyply_ to generate it as a circle, which is done by adding the `-cycles` flag followed by the name of the molecule. To generate the starting coordinates run:
+Next using the topology file from the previous example. Coordinates are generated as before; we have to add a command line flag that tells _Polyply_ to generate it as a circle, which is done by adding the `-cycles` flag followed by the molecule's name. To generate the starting coordinates, run:
 
 ```{execute}
 polyply gen_coords -p topol.top -name ssDNA -dens 250 -o output.gro -cycles ssDNA

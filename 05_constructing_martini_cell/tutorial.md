@@ -111,7 +111,7 @@ The `tsi` file also defines the vertices on which to place the membrane proteins
 The _TS2CG_ protocol should be somewhat familiar; as a first step, we subsample the mesh to have enough points for all the lipids. Perform the pointillism step by running:
 
 ```sh {execute}
-PLM -TSfile sphere.tsi -Mashno 3
+PLM -TSfile sphere.tsi -Mashno 3 -bilayerThickness 2.0
 ```
 
 ### Backmap to Martini2
@@ -119,7 +119,7 @@ PLM -TSfile sphere.tsi -Mashno 3
 The next step in the _TS2CG_ protocol is performing the membrane building. Place the lipids and proteins by running:
 
 ```sh {execute}
-PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -bilayerThickness 2.0 -defout vesicle
+PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -defout vesicle
 ```
 
 <div align="center">

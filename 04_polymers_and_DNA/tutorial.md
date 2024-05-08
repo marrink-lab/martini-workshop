@@ -16,6 +16,12 @@ In this tutorial, we will how to generate input files to perform simulations of 
 
 In the Martini ecosystem, _Polyply_ is used to generate both the input parameter files and the starting coordinates.[^polyply] Note that _Polyply_ is a forcefield agnostic tool, which can generate input files for all sorts of polymers, ssDNA, and carbohydrates in both all-atom and coarse-grained resolution.
 
+Install _Polyply_ by running: 
+
+```
+pip install polyply==1.5.0 --user
+```
+
 During the tutorial, we will focus on coarse-grained single-stranded DNA (ssDNA) simulations using the Martini2 forcefield. [^martini2] The workflow showcased can, however, be applied to other types of polymer systems.
 
 To start this tutorial, don't forget to navigate to the respective folder in the `martini-workshop` repository:
@@ -38,6 +44,7 @@ Thus, to generate the parameters file (`itp`) we only need the DNA sequence. Let
 - `-seq`:
 - `-name`:
 - `-seq`:
+
 ```{execute}
 polyply gen_params -lib martini2 -o ssDNA.itp -name ssDNA -seq DT5:1 DT:23 DT3:1
 ```
@@ -81,6 +88,7 @@ In the above file the molecule directive contains the molecule name as well as t
 - `-name`: name of the final molecul
 - `-dens`: density of system (kg/m3)
 - `-o`: output GRO (`.gro`)
+
 ```{execute}
 polyply gen_coords -p topol.top -b build_file.bld -name ssDNA -dens 250 -o output.gro
 ```
@@ -88,6 +96,7 @@ polyply gen_coords -p topol.top -b build_file.bld -name ssDNA -dens 250 -o outpu
 For more information on the functionality of the `gen_coords` subrouting, run `polyply gen_coords -h`
 
 Next, we have to run an energy minimization on the system.
+
 ```
 mkdir -p em
 gmx grompp -f mdp_files/em.mdp -p topol.top -c output.gro -o em/em.tpr
@@ -103,6 +112,7 @@ The minimized structure should look like Figure 1.
 
 ## Circular polymers
 Let us now also have a look at how to make circular ssDNA. The simplest way to proceed is to specify the sequence in `.ig` form that specifies a circular sequence by adding a 2 as the last character of the sequence. 
+
 ```
 ; Circular DNA
 Random 25 bp sequence
@@ -116,20 +126,17 @@ polyply gen_params -lib martini2 -o ssDNA.itp -name ssDNA -seqf sequence.ig
 Next using the topology file from the previous example. Coordinates are generated as before; we just have to add a command line flag that tells _Polyply_ to generate it as a circle, which is done by adding the `-cycles` flag followed by the name of the molecule. To generate the starting coordinates run:
 
 ```{execute}
-polyply gen_coords -p topol.top -b build_file.bld -name ssDNA -dens 250 -o output.gro -cycles ssDNA
+polyply gen_coords -p topol.top -name ssDNA -dens 250 -o output.gro -cycles ssDNA
 ```
 
 Next, we have to run an energy minimization on the system.
+
 ```
 mkdir -p em
 gmx grompp -f mdp_files/em.mdp -p topol.top -c output.gro -o em/em.tpr
 gmx mdrun -v -deffnm em/em
 ```
 The minimized structure should look like Figure 2.
-
-<div align="center">
-<img src="../figures/04_ssDNA_melt.png" width="50%"/>
-</div>
 
 <div align="center">
 <img src="../figures/04_ssDNA_melt.png" width="50%"/>

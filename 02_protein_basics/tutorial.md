@@ -15,7 +15,7 @@ version: beta
 In this tutorial, we will create and simulate a Martini 3 model based on an atomistic protein structure. The aim is to define the regular workflow and protocols for setting up coarse-grained simulations of soluble globular proteins.
 
 We will create a CG model of a S-adenosylmethionine synthase protein selected from the *JCVI-syn3A* proteome.[^protein_uniprot] The all-atom structure was generated using an AlphaFold2.
-
+ 
 To start this tutorial, don't forget to navigate to the respective folder in the `martini-workshop` repository:
 
 ```sh
@@ -23,8 +23,8 @@ cd 02_protein_basics
 ```
 
 > [!TIP]
-> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1)
-
+> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1)  
+ 
 ### Programs
 
 In this tutorial, we will use the following programs.
@@ -49,12 +49,7 @@ Generally, cleaning the structure comes down to removing any non-protein atoms, 
 
 ## Creating a CG model using _Martinize2_.
 
-Now we are ready to map the atomistic structure to a coarse-grain model using _Martinize2_.[^Martinize2] Install _Martinize2_ by running:
-
-```
-pip3 install vermouth --user
-```
-This coarse-graining step is well-automated but requires quite a few input options. We use the following:
+Now we are ready to map the atomistic structure to a coarse-grain model using _Martinize2_.[^Martinize2] This coarse-graining step is well-automated but requires quite a few input options. We use the following:
 
 - `-f`: path to the input structure.
 - `-o`: output path for the topology file
@@ -84,9 +79,9 @@ martinize2 -f protein.pdb -o topol.top -x protein_cg.pdb \
 >To help preserve the higher-order structure of proteins, we add extra harmonic bonds between non-bonded beads based on a distance cut-off. When the option `-elastic` is set, __Martinize2__ will automatically generate harmonic bonds between backbone beads, creating an *elastic network*.<br>
 It is possible to tune the elastic bonds in order to make the protein behave properly: change the force constant (`-ef`), make the force constant distance-dependent (`-ea`, `-ep`), change upper and lower distance cut-off (`-eu`, `ea`). The only way to find the proper parameters is to try different options and compare the behavior of your protein to an atomistic simulation or experimental data (NMR, etc.).
 
->A second option which can complement improvements in structure and dynamics of side chains is the use of *side chain corrections* (`-scfix`), which are extra dihedrals added between side chains and backbone beads.
+>A second option which can complement improvements in structure and dynamics of side chains is the use of *side chain corrections* (`-scfix`), which are extra dihedrals added between side chains and backbone beads. 
 
->Be aware that both the *elastic networks* and the *side chain corrections* are based on your reference atomistic structure. A last aspect that can be considered is the addition of *disulfide bridges* that can also be automatically detected by Martinize2.
+>Be aware that both the *elastic networks* and the *side chain corrections* are based on your reference atomistic structure. A last aspect that can be considered is the addition of *disulfide bridges* that can also be automatically detected by Martinize2. 
 
 </details>
 
@@ -280,7 +275,7 @@ So, we can safely ignore the warning using the `-maxwarn 1` option.
 
 After setting up the simulation starting structure, we perform a short MD simulation. The standard Martini simulation protocol consists of three steps:
 
-```
+``` 
 Energy minimization → Equilibration simulation → Production simulation.
 ```
 
@@ -333,7 +328,7 @@ From this, we can quickly calculate that the simulation will sample *2500000 &sd
 <details>
 <summary>Details on the `.mdp` options:</summary>
 
->The number of steps per compressed frame output (`nstxout-compressed`) is set to 50000, so we will store 50 frames.
+>The number of steps per compressed frame output (`nstxout-compressed`) is set to 50000, so we will store 50 frames. 
 >The temperature coupling is set to a velocity-rescaling protocol, and a Parrinello-Rahman barostat is used.
 >Since the system can be considered to be symmetrical across all axes, an isotropic pressure coupling is the appropriate choice here.
 >The constraints are set to `none`, since we are interested in the unconstrained dynamics, here.
@@ -354,7 +349,7 @@ The easiest way to visualise this trajectory is to use [VMD](https://www.ks.uiuc
 
 - `-pbc whole`: make molecules that are broken up by the pbc whole.
 - `-center`: place the molecules in the center of the box.
-
+ 
 ```sh {execute}
 gmx trjconv -s md/md.tpr -f md/md.xtc -o md/traj.xtc -pbc whole -center
     > Protein [press Enter]
@@ -364,16 +359,16 @@ gmx trjconv -s md/md.tpr -f md/md.xtc -o md/traj.xtc -pbc whole -center
 
 This should have fixed our trajectory for visualisation, which we can now open in VMD:
 
-```sh
+```sh 
 vmd eq/eq.gro md/traj.xtc -e ../files/viz.vmd
 ```
 
 Here, we use the option `-e ../files/viz.vmd`, which loads in default representations for the Martini molecules in this workshop.
 
 > [!WARNING]
-> If you are already using a `.vmdrc` file, it might interfere with the visualizations in this tutorial.
+> If you are already using a `.vmdrc` file, it might interfere with the visualizations in this tutorial. 
 
-You will notice that the default visualization is not optimal. VMD suffers from the fact that Martini bonds are usually not drawn because they are much longer than the default atomistic bond lengths, which VMD expects. One way to circumvent this problem is by using a plugin script `cg_bonds-v5.tcl` that takes the GROMACS topology file and adds the Martini bonds defined in the topology.
+You will notice that the default visualization is not optimal. VMD suffers from the fact that Martini bonds are usually not drawn because they are much longer than the default atomistic bond lengths, which VMD expects. One way to circumvent this problem is by using a plugin script `cg_bonds-v5.tcl` that takes the GROMACS topology file and adds the Martini bonds defined in the topology. 
 
 To use this plugin, we must first make our topology files understandable for *cg_bonds*. This workshop will use `viz_top_writer.py,` to automate the *cleaning* of the topology files. This tool is provided in the `../files` directory, but you normally want to download it from [here](https://github.com/csbrasnett/martini_vis). In the vmd console run:
 

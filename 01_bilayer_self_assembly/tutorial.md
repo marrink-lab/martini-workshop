@@ -10,7 +10,7 @@ version: beta
 
 # Bilayer self-assembly
 
-This tutorial was based on the [2021 Martini workshop](http://cgmartini.nl/index.php/2021-martini-online-workshop/tutorials/561-1-lipid-bilayers-i).
+based on http://cgmartini.nl/index.php/2021-martini-online-workshop/tutorials/561-1-lipid-bilayers-i
 
 The *Martini* coarse-grained (CG) model was initially developed for lipids[^marrink2004] [^marrink2007]. The underlying philosophy of *Martini* is to build an extendable CG model based on simple modular building blocks and to use only a few parameters and standard interaction potentials to maximize applicability and transferability. Martini 3 greatly expanded the number of possible interactions but retained this building-block approach[^souza2021]. Due to Martini's modularity, a large set of different lipid types has been parameterized. Their parameters are available with the [Martini 3 Release archive](../files/martini_v3.0.0). This tutorial will teach you how to set up lipid-water system simulations with lipids from this collection, focusing on bilayers.
 
@@ -117,7 +117,7 @@ Now that we have generated the initial structure for our simulation, we need to 
 ```sh {execute}
 mkdir -p em
 gmx grompp -f mdp_files/em.mdp -c 128_POPC_solvated.gro -p topol.top -o em/em.tpr
-gmx mdrun -v -deffnm em/em
+gmx mdrun -v -deffnm md/md
 ```
 
 ## Running the MD simulation
@@ -267,6 +267,7 @@ xmgrace analysis/msd.xvg
 
 In comparing the diffusion coefficient obtained from a Martini simulation to a measured one, one can expect a faster diffusion at the CG level due to the smoothened free energy landscape (note, however, that the use of a defined conversion factor is no longer recommended, as it can vary significantly depending on the molecule in question). Also note that the tool averages over all lipids to produce the MSD curve. It is probably much better to analyze the motion of each lipid individually and remove center-of-mass motion per leaflet.
 
+## References
 [^marrink2004]: Marrink, S. J., De Vries, A. H., and Mark, A. E. (2004) Coarse grained model for semiquantitative lipid simulations. J. Phys. Chem. B 108, 750–760. DOI:10.1021/jp036508g
 [^marrink2007]: Marrink, S. J., Risselada, H. J., Yefimov, S., Tieleman, D. P., and De Vries, A. H. (2007) The MARTINI force field: coarse grained model for biomolecular simulations. J. Phys. Chem. B 111, 7812–7824. DOI:10.1021/jp071097f
 [^souza2021]: Souza, P.C.T., Alessandri, R., Barnoud, J. et al. Martini 3: a general purpose force field for coarse-grained molecular dynamics. Nat Methods 18, 382–388 (2021). https://doi.org/10.1038/s41592-021-01098-3

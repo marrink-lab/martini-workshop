@@ -11,7 +11,7 @@ version: beta
 
 # Constructing a Martini Cell Model
 
-After introducing the Martini ecosystem in the previous four tutorials, we will use the tools introduced to construct a cell-like model. 
+After introducing the Martini ecosystem in the previous four tutorials, we will use the tools introduced to construct a cell-like model.
 
 To start this tutorial, don't forget to navigate to the respective folder in the `martini-workshop` repository:
 
@@ -20,7 +20,7 @@ cd 05_constructing_martini_cell
 ```
 
 > [!TIP]
-> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1)  
+> You can download the worked examples of this tutorial [here](...). (GROMACS version 2024.1)
 
 ### Programs
 
@@ -36,11 +36,11 @@ In this tutorial, we will use the following programs to build our cell model:
 		git clone https://github.com/marrink-lab/TS2CG1.1
 		cd TS2CG1.1
 		```
-		
+
 		For compiling, gcc version 8.3.0 or above is needed.
-		
+
 		In the source code folder, execute the script `compile.sh` as
-		
+
 		```{execute}
 		./comp
 		```
@@ -102,7 +102,7 @@ To verify that the building step was successful, inspect the generated `chromoso
 
 ## Envelope
 
-The next step in our cell modeling process is constructing the cell envelope. Luckily for us, the cell envelope of the Syn3A is known to be almost spherical, which makes modeling the membrane quite simple. For the membrane, we use a spherical triangulated mesh scaled to encapsulate the previously generated chromosome. The membrane composition in our model represents an experimental lipidomics composition. For simplicity, we have chosen a minimal lipid diet. The corresponding triangulated surface file (`tsi`) and membrane builder settings file (`.str`) are provided in the current directory. 
+The next step in our cell modeling process is constructing the cell envelope. Luckily for us, the cell envelope of the Syn3A is known to be almost spherical, which makes modeling the membrane quite simple. For the membrane, we use a spherical triangulated mesh scaled to encapsulate the previously generated chromosome. The membrane composition in our model represents an experimental lipidomics composition. For simplicity, we have chosen a minimal lipid diet. The corresponding triangulated surface file (`tsi`) and membrane builder settings file (`.str`) are provided in the current directory.
 
 The `tsi` file also defines the vertices on which to place the membrane proteins present in the lipid membrane. In the current directory, we prepared a folder (`proteins/membrane_proteins`) containing the structure of a selection of membrane proteins present in the Syn3A. Our chosen set of membrane proteins includes ATP synthase, magnesium transporter, calcium transporter, and potassium transporter.
 
@@ -119,7 +119,7 @@ PLM -TSfile sphere.tsi -Mashno 3 -bilayerThickness 2.0
 The next step in the _TS2CG_ protocol is performing the membrane building. Place the lipids and proteins by running:
 
 ```sh {execute}
-PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -defout vesicle
+PCG -str input.str -Bondlength 0.2 -LLIB Martini2.LIB -defout membrane
 ```
 
 <div align="center">

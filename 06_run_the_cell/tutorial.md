@@ -13,7 +13,6 @@ version: beta
 
 Download tarball from:
 https://drive.google.com/file/d/1BsWglcEDCO9TxwkZ5tdyVXMVaj-CoZXT/view?usp=sharing
-
 ## Compiling GROMACS
 
 ```

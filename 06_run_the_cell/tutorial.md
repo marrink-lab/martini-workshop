@@ -11,6 +11,9 @@ version: beta
 
 # Simulating a Martini Cell Model
 
+Download tarball from:
+https://drive.google.com/file/d/1WoNFGZIV7mXFkadX6_06XVYx1mQ4aTQc/view?usp=sharing
+
 ## Compiling GROMACS
 
 
